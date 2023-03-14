@@ -1,13 +1,18 @@
 package minh.lehong.yourwindowyoursoul.repository;
 
-import minh.lehong.yourwindowyoursoul.entity.User;
+import minh.lehong.yourwindowyoursoul.model.entity.User;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-public interface UserRepository extends JpaRepository<User, String> {
-    User findByEmail(String email);
+import java.util.List;
+import java.util.Optional;
 
-//    List<User> findAllByIsDeletedAndIsDisabled(int isDeleted, boolean isDisabled);
-//
-//    List<User> findAllByUserIdAndIsDeleted(String userId, int isDeleted);
+@Repository
+public interface UserRepository extends JpaRepository<User, String>{
+
+    User findByEmail(String email);
 }
