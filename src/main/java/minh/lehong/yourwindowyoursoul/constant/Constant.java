@@ -19,8 +19,8 @@ public class Constant {
 
     public static final int SIGNUP_ERROR = 0;
     public static final int LOGIN_ERROR = 0;
-    public static final int THROW_EXCEPTION = 1000;
-
+    public static final int HAD_ACCOUNT = 2;
+    public static final int PASSWORD_NULL = 3;
     public static final int SIGNUP_SUCCESS = 1;
     public static final int LOGIN_SUCCESS = 1;
 

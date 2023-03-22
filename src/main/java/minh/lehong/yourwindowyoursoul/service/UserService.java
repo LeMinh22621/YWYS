@@ -9,6 +9,6 @@ public interface UserService {
 
     User findByEmail(String email);
     User save(User user);
-    Response login(LoginRequest request);
-    Response signup(UserRequest userRequest);
+
+    boolean existsUserByEmail(String email);
 }

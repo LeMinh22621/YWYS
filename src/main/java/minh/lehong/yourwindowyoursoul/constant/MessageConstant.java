@@ -22,6 +22,12 @@ public class MessageConstant {
     // User
     public static final String LOGIN_ERROR = "login-error";
     public static final String LOGIN_SUCCESS = "login-success";
+
+    public static final String HAD_ACCOUNT = "had-account";
+    public static final String PASSWORD_NULL = "password-null";
+    public static final String SIGNUP_SUCCESS = "signup-success";
+
+    public static final String SIGNUP_ERROR = "signup-error";
     public static final String ACCOUNT_DISABLE = "account-disabled";
 
     // Quote csv

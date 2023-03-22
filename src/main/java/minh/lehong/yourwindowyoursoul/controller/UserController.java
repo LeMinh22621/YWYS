@@ -3,9 +3,10 @@ package minh.lehong.yourwindowyoursoul.controller;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.ServiceException;
+import minh.lehong.yourwindowyoursoul.facade.UserFacade;
+import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.UserRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
-import minh.lehong.yourwindowyoursoul.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +16,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UserFacade userFacade;
     @Autowired
     CommonConverter commonConverter;
 
-    @PostMapping("/login")
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<Response> login(@RequestBody final LoginRequest request) {
+    @GetMapping()
+    public ResponseEntity<String> test() throws Exception{
+        System.out.println("ấ");
+        return new ResponseEntity<>("test controller", HttpStatus.OK);
+    }
 
-        Response response = userService.login(request);
+    @PostMapping("/login")
+    public ResponseEntity<Response> login(@RequestBody final LoginRequest request) throws ServiceException{
+
+        Response response = userFacade.login(request);
 
         if (response != null && response.isStatus()) {
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -42,10 +48,9 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<Response> signup(@RequestBody final UserRequest userRequest) {
+    public ResponseEntity<Response> signup(@RequestBody final SignupRequest signupRequest) throws ServiceException{
 
-        Response response = userService.signup(userRequest);
+        Response response = userFacade.signup(signupRequest);
 
         if (response != null && response.isStatus()) {
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -57,4 +62,5 @@ public class UserController {
         }
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

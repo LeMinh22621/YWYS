@@ -1,8 +1,6 @@
 package minh.lehong.yourwindowyoursoul.exceptions;
 
-import minh.lehong.yourwindowyoursoul.constant.Constant;
 import minh.lehong.yourwindowyoursoul.constant.enums.ExceptionEnums;
-import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +25,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(ex.getMessage());
 		error.setStatus(status);
@@ -36,6 +35,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@Override
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(ExceptionEnums.EXCEPTION_405.getDescription());
 		error.setStatus(status);
@@ -45,6 +45,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage("Invalid ID supplied");
 		error.setStatus(status);
@@ -54,6 +55,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		String message = "";
 		if (ex.getBindingResult().hasErrors()) {
@@ -70,6 +72,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@ExceptionHandler(ServiceException.class)
 	public ResponseEntity<ApplicationErrorResponse> handlerBeneficiaryException(ServiceException exception,
 			WebRequest request) {
+		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(exception.getMesssage());
 		error.setStatus(exception.getStatus());
@@ -79,22 +82,25 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ExceptionHandler(DBException.class)
 	public ResponseEntity<ApplicationErrorResponse> handlerDBException(ServiceException exception) {
+		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(exception.getMesssage());
 		error.setStatus(exception.getStatus());
 		return new ResponseEntity(error, exception.getStatus());
 	}
 
-//	@ExceptionHandler(NoSuchMessageException.class)
-//	public ResponseEntity<Object> handleNoSuchMessageException(NoSuchMessageException noSuchMessageException) {
-//		ApplicationErrorResponse error = new ApplicationErrorResponse();
-//		error.setMessage(noSuchMessageException.getMessage());
-//		error.setStatus(HttpStatus.EXPECTATION_FAILED);
-//		return new ResponseEntity(error, );
-//	}
-
 	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<Object> handleAccessDeniedException(AuthenticationException ex, WebRequest request) {
+		ex.printStackTrace();
+		ApplicationErrorResponse error = new ApplicationErrorResponse();
+		error.setMessage(ex.getMessage());
+		error.setStatus(HttpStatus.UNAUTHORIZED);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+	}
+
+	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(ex.getMessage());
 		error.setStatus(HttpStatus.UNAUTHORIZED);
@@ -104,6 +110,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@ResponseStatus
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException exc) {
+		exc.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage("File to large !");
 		error.setStatus(HttpStatus.EXPECTATION_FAILED);
