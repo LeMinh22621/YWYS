@@ -27,6 +27,10 @@ public class MessageConstant {
     public static final String PASSWORD_NULL = "password-null";
     public static final String SIGNUP_SUCCESS = "signup-success";
 
+    public static final String UPDATE_SUCCESS = "update-success";
+
+    public static final String UPDATE_ERROR = "update-error";
+
     public static final String SIGNUP_ERROR = "signup-error";
     public static final String ACCOUNT_DISABLE = "account-disabled";
 

@@ -1,7 +1,5 @@
 package minh.lehong.yourwindowyoursoul.converter.impl;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import minh.lehong.yourwindowyoursoul.constant.Constant;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.Response;
@@ -12,19 +10,25 @@ import minh.lehong.yourwindowyoursoul.payload.response.UserResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.TimeZone;
 
 @Component
 public class CommonConverterImpl implements CommonConverter {
     @Override
-    public UserResponse convertUserEntityToUserData(final User user) {
+    public UserResponse convertUserEntityToUserData(final User user) throws ParseException {
         UserResponse userResponse = null;
         if(user != null){
+            // convert to right format
+            user.setCreateDate(this.convertToG7(user.getCreateDate()));
+            user.setUpdatedDate(this.convertToG7(user.getUpdatedDate()));
+
+            // set user entity to user response
             userResponse = new UserResponse();
 
             userResponse.setId(user.getUserId());
@@ -87,9 +91,26 @@ public class CommonConverterImpl implements CommonConverter {
 
     @Override
     public Date convertStringToDate(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDate date = LocalDate.parse(dateString, formatter);
 
         return new Date(date.toEpochDay());
+    }
+
+    @Override
+    public Date convertToG7(Date date) throws ParseException {
+        date.setTime(date.getTime() + 7*60*60*1000);
+        return date;
+    }
+
+    @Override
+    public User convertOldUserToNewUser(User oldUser, User newUser) {
+        oldUser.setUpdatedDate(new Date());
+        oldUser.setPassword(new BCryptPasswordEncoder().encode(newUser.getPassword()));
+        oldUser.setUrlAvatar(newUser.getUrlAvatar());
+        oldUser.setFirstName(newUser.getFirstName());
+        oldUser.setLastName(newUser.getLastName());
+
+        return oldUser;
     }
 }

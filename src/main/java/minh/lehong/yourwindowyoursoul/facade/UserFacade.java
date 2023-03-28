@@ -5,7 +5,12 @@ import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.UserRequest;
 
+import java.text.ParseException;
+
 public interface UserFacade {
-    Response login(LoginRequest request);
+    Response login(LoginRequest request) throws ParseException;
     Response signup(SignupRequest signupRequest);
+
+    Response update(UserRequest userRequest);
+
 }

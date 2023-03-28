@@ -17,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.text.ParseException;
 import java.util.Objects;
 
 @ControllerAdvice
@@ -69,19 +70,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ExceptionHandler(ServiceException.class)
-	public ResponseEntity<ApplicationErrorResponse> handlerBeneficiaryException(ServiceException exception,
-			WebRequest request) {
-		exception.printStackTrace();
-		ApplicationErrorResponse error = new ApplicationErrorResponse();
-		error.setMessage(exception.getMesssage());
-		error.setStatus(exception.getStatus());
-		return new ResponseEntity(error, exception.getStatus());
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ExceptionHandler(DBException.class)
-	public ResponseEntity<ApplicationErrorResponse> handlerDBException(ServiceException exception) {
+	public ResponseEntity<ApplicationErrorResponse> handlerDBException(DBException exception) {
 		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(exception.getMesssage());
@@ -115,5 +105,14 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		error.setMessage("File to large !");
 		error.setStatus(HttpStatus.EXPECTATION_FAILED);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(error);
+	}
+
+	@ExceptionHandler(ParseException.class)
+	public ResponseEntity<Object> handleAccessDeniedException(ParseException ex) {
+		ex.printStackTrace();
+		ApplicationErrorResponse error = new ApplicationErrorResponse();
+		error.setMessage(ex.getMessage());
+		error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 	}
 }
