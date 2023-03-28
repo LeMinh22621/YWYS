@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.configuration.security;
 
 import lombok.RequiredArgsConstructor;
 import minh.lehong.yourwindowyoursoul.service.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +24,12 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    @Autowired
     private final JwtService jwtService;
 
+    @Autowired
     private final UserDetailsService userDetailsService;
+
     @Override
     protected void doFilterInternal(@NotNull  HttpServletRequest request,
                                     @NotNull HttpServletResponse response,

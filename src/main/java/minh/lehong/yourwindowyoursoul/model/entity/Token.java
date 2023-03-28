@@ -1,22 +1,22 @@
-package minh.lehong.yourwindowyoursoul.utils.token;
+package minh.lehong.yourwindowyoursoul.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import minh.lehong.yourwindowyoursoul.model.entity.User;
+import lombok.*;
+import minh.lehong.yourwindowyoursoul.utils.token.TokenType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.UUID;
 
-@Data
+@Entity
+@Table(name = "token")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Token {
+@Getter
+@Setter
+public class Token implements Serializable {
 
   @Id
   @GeneratedValue(generator = "UUID")

@@ -15,6 +15,4 @@ public interface UserService extends UserDetailsService {
     boolean existsUserByEmail(String email);
 
     AuthenticationResponse register(SignupRequest request);
-
-//    UserDetails loadUserDetailsJWT(UUID userId);
 }

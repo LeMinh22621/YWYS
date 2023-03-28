@@ -6,11 +6,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import minh.lehong.yourwindowyoursoul.service.JwtService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -20,9 +20,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-
-    @Value("${jwt.secret_key}")
-    private String secretKey;
+    private String secretKey = Base64.getEncoder().encodeToString("lehongminh".getBytes());
 
     @Value("${jwt.expiration_time}")
     private String expiredTime;
@@ -59,7 +57,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiredTime)))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
+                .signWith(SignatureAlgorithm.HS256, secretKey)//getSignInKey())
                 .compact();
     }
 
@@ -72,14 +70,14 @@ public class JwtServiceImpl implements JwtService {
     {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(secretKey)//getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+//    private Key getSignInKey() {
+//        byte[] keyBytes = Base64.getDecoder().decode(secretKey.getBytes());
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 }

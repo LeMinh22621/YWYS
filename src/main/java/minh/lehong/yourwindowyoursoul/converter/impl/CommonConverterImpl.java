@@ -34,7 +34,7 @@ public class CommonConverterImpl implements CommonConverter {
             userResponse.setId(user.getUserId());
             userResponse.setEmail(user.getEmail());
             userResponse.setPassword(user.getPassword());
-            userResponse.setDisabled(user.isDisabled());
+            userResponse.setDisabled(!user.isEnabled());
             userResponse.setFirstName(user.getFirstName());
             userResponse.setLastName(user.getLastName());
             userResponse.setDateCreated(user.getCreateDate());
@@ -53,7 +53,6 @@ public class CommonConverterImpl implements CommonConverter {
             user.setLastName(userRequest.getLastName());
             user.setUrlAvatar(userRequest.getUrlAvatar());
             user.setPassword(userRequest.getPassword());
-            user.setDisabled(userRequest.isDisabled());
             user.setCreateDate(userRequest.getDateCreated());
             user.setUpdatedDate(userRequest.getDateModified());
         }
@@ -69,7 +68,6 @@ public class CommonConverterImpl implements CommonConverter {
             user.setLastName(signupRequest.getLastName());
             user.setUrlAvatar(null);
             user.setPassword(signupRequest.getPassword());
-            user.setDisabled(false);
             user.setCreateDate(new Date());
             user.setUpdatedDate(new Date());
         }
