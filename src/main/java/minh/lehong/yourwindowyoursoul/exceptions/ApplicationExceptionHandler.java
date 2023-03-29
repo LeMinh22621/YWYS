@@ -1,6 +1,7 @@
 package minh.lehong.yourwindowyoursoul.exceptions;
 
 import minh.lehong.yourwindowyoursoul.constant.enums.ExceptionEnums;
+import minh.lehong.yourwindowyoursoul.payload.response.ApplicationErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

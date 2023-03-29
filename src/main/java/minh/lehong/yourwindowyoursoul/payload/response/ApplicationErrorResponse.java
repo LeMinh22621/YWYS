@@ -1,4 +1,4 @@
-package minh.lehong.yourwindowyoursoul.exceptions;
+package minh.lehong.yourwindowyoursoul.payload.response;
 
 import org.springframework.http.HttpStatus;
 
