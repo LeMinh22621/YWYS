@@ -1,6 +1,7 @@
 package minh.lehong.yourwindowyoursoul.service;
 
 import minh.lehong.yourwindowyoursoul.model.entity.User;
+import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,4 +16,6 @@ public interface UserService extends UserDetailsService {
     boolean existsUserByEmail(String email);
 
     AuthenticationResponse register(SignupRequest request);
+
+    AuthenticationResponse login(LoginRequest request);
 }

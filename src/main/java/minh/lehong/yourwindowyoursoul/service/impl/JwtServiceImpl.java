@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    private String secretKey = Base64.getEncoder().encodeToString("lehongminh".getBytes());
+    private String secretKey = "3F4428472B4B6150645367566B5970337336763979244226452948404D635165";//Base64.getEncoder().encodeToString("lehongminh".getBytes());
 
     @Value("${jwt.expiration_time}")
     private String expiredTime;
@@ -57,7 +57,7 @@ public class JwtServiceImpl implements JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiredTime)))
-                .signWith(SignatureAlgorithm.HS256, secretKey)//getSignInKey())
+                .signWith(SignatureAlgorithm.HS256, getSignInKey())
                 .compact();
     }
 
@@ -70,14 +70,14 @@ public class JwtServiceImpl implements JwtService {
     {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(secretKey)//getSignInKey())
+                .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-//    private Key getSignInKey() {
-//        byte[] keyBytes = Base64.getDecoder().decode(secretKey.getBytes());
-//        return Keys.hmacShaKeyFor(keyBytes);
-//    }
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }

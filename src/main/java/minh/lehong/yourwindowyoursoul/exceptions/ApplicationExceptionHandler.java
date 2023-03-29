@@ -72,7 +72,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ExceptionHandler(DBException.class)
 	public ResponseEntity<ApplicationErrorResponse> handlerDBException(DBException exception) {
-		exception.printStackTrace();
+//		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(exception.getMesssage());
 		error.setStatus(exception.getStatus());

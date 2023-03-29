@@ -1,10 +1,9 @@
 package minh.lehong.yourwindowyoursoul.controller;
 
 import lombok.RequiredArgsConstructor;
-import minh.lehong.yourwindowyoursoul.facade.UserFacade;
+import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
 import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
-import minh.lehong.yourwindowyoursoul.payload.response.UserResponse;
 import minh.lehong.yourwindowyoursoul.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody SignupRequest request) throws Exception
     {
@@ -27,6 +27,10 @@ public class AuthenticationController {
         return  ResponseEntity.ok(authenticationResponse);
     }
 
-//    @PostMapping("authenticate")
-//    public ResponseEntity<UserResponse>
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) throws Exception
+    {
+        AuthenticationResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
+    }
 }
