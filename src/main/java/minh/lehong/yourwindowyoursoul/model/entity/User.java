@@ -55,9 +55,11 @@ public class User extends EntityCommon implements UserDetails,Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Token> tokens;
-
+    @ManyToOne
+    @JoinColumn(name = "class_room_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private ClassRoom classRoom;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

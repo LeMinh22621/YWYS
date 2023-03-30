@@ -3,7 +3,6 @@ package minh.lehong.yourwindowyoursoul.model.entity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,28 +10,27 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sound")
+@Table(name = "class_room")
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Sound implements Serializable {
+public class ClassRoom extends EntityCommon implements Serializable {
     @Id
-    @Column(name = "sound_id")
+    @Column(name = "class_room_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID soundId;
+    private UUID classRoomId;
 
-    @Column
-    private String link;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "room_id")
+    private Room room;
 
-    @Column
-    private String name;
-
-    @ManyToMany(mappedBy = "sounds")
+    @OneToMany(mappedBy = "classRoom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Room> rooms;
+    private Collection<User> users;
 }

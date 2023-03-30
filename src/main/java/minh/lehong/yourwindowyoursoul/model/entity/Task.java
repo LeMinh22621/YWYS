@@ -1,40 +1,46 @@
 package minh.lehong.yourwindowyoursoul.model.entity;
 
+
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "background")
+@Table(name = "task")
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Background extends EntityCommon implements Serializable {
+public class Task extends EntityCommon implements Serializable {
     @Id
-    @Column(name = "background_id")
+    @Column(name = "task_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID backgroundId;
-    @Column(name = "link")
-    private String link;
+    private UUID taskId;
+
+    @Column(name = "task_priority")
+    private Integer taskPriority;
+
+    @Column(name = "task_intend")
+    private Long taskIntend;
 
     @ManyToOne
-    @JoinColumn(name = "theme_id")
+    @JoinColumn(name = "task_level_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Theme theme;
+    private TaskLevel taskLevel;
 
-    @OneToMany(mappedBy = "background", fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "room_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Room> rooms;
+    private Room room;
 }

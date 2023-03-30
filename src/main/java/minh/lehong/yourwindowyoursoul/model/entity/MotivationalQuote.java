@@ -3,7 +3,6 @@ package minh.lehong.yourwindowyoursoul.model.entity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,27 +10,26 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sound")
-@Builder
+@Table(name = "motivational_quote")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Sound implements Serializable {
+public class MotivationalQuote implements Serializable {
     @Id
-    @Column(name = "sound_id")
+    @Column(name = "motivational_quote_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID soundId;
+    private UUID motivationalQuoteId;
 
-    @Column
-    private String link;
+    @Column(name = "content")
+    private String content;
 
-    @Column
-    private String name;
+    @Column(name = "author")
+    private String author;
 
-    @ManyToMany(mappedBy = "sounds")
+    @OneToMany(mappedBy = "motivationalQuote", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<Room> rooms;
