@@ -33,24 +33,19 @@ public class Room extends EntityCommon implements Serializable {
     @ManyToOne
     @JoinColumn(name = "background_id")
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Background background;
 
-    @ManyToOne
-    @JoinColumn(name = "timer_id")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
     private Timer timer;
 
     @ManyToOne
     @JoinColumn(name = "motivational_quote_id")
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private MotivationalQuote motivationalQuote;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Collection<Task> tasks;
 
     @ManyToMany
@@ -58,4 +53,9 @@ public class Room extends EntityCommon implements Serializable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<Sound> sounds;
+
+    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<User> users;
 }

@@ -32,9 +32,4 @@ public class Timer extends EntityCommon implements Serializable {
     private Long shortBreak;
     @Column(name = "pomodoro_time")
     private Long pomodoroTime;
-
-    @OneToMany(mappedBy = "timer", fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Collection<Room> rooms;
 }

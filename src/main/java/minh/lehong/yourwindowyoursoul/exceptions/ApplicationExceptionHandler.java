@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.security.SignatureException;
 import java.text.ParseException;
 import java.util.Objects;
 
@@ -98,14 +99,13 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
 
-	@ResponseStatus
-	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException exc) {
-		exc.printStackTrace();
+	@ExceptionHandler(SignatureException.class)
+	public ResponseEntity<Object> handleAccessDeniedException(SignatureException ex) {
+		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
-		error.setMessage("File to large !");
-		error.setStatus(HttpStatus.EXPECTATION_FAILED);
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(error);
+		error.setMessage(ex.getMessage());
+		error.setStatus(HttpStatus.UNAUTHORIZED);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
 
 	@ExceptionHandler(ParseException.class)

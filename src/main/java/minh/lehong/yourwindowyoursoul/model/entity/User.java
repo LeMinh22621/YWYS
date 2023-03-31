@@ -55,11 +55,11 @@ public class User extends EntityCommon implements UserDetails,Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "class_room_id")
+    @ManyToMany
+    @JoinTable(name = "user_room", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private ClassRoom classRoom;
+    private Collection<Room> rooms;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

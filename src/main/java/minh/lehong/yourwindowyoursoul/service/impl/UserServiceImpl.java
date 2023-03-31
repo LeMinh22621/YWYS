@@ -1,5 +1,8 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.var;
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
@@ -20,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.UUID;
 
 @Service
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationResponse register(SignupRequest request) {
+    public AuthenticationResponse register(SignupRequest request) throws DBException, Exception{
         if(userRepository.findByEmail(request.getEmail()).isPresent())
         {
             throw new DBException("This email has register!", HttpStatus.CONFLICT);
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationResponse login(LoginRequest request)
+    public AuthenticationResponse login(LoginRequest request) throws UsernameNotFoundException, Exception
     {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -102,7 +106,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public AuthenticationResponse logout(String tokenHeader) throws ParseException, ExpiredJwtException, Exception {
+        String newToken = jwtService.invalidToken(tokenHeader);
+        return AuthenticationResponse.builder().token(newToken).build();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        return userRepository.findByEmail(username).get();
     }
 }

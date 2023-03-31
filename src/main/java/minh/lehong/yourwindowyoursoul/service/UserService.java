@@ -6,6 +6,7 @@ import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.text.ParseException;
 import java.util.UUID;
 
 public interface UserService extends UserDetailsService {
@@ -15,7 +16,9 @@ public interface UserService extends UserDetailsService {
     User save(User user);
     boolean existsUserByEmail(String email);
 
-    AuthenticationResponse register(SignupRequest request);
+    AuthenticationResponse register(SignupRequest request) throws Exception;
 
-    AuthenticationResponse login(LoginRequest request);
+    AuthenticationResponse login(LoginRequest request) throws Exception;
+
+    AuthenticationResponse logout(String tokenHeader) throws ParseException, Exception;
 }

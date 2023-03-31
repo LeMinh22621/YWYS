@@ -42,6 +42,20 @@ public class JwtServiceImpl implements JwtService {
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
+    @Override
+    public String invalidToken(String tokenHeader) {
+        String token = tokenHeader.replace("Bearer ", "");
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+
+        // Set the expiration time of the JWT token to an earlier time than the current time
+        claims.setExpiration(new Date(System.currentTimeMillis() - Long.parseLong(expiredTime)));
+
+        // Generate a new JWT token with the updated claims
+        String newToken = Jwts.builder().setClaims(claims).signWith(getSignInKey()).compact();
+
+        return newToken;
+    }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
