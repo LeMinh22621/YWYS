@@ -24,8 +24,7 @@ public class MotivationalQuoteServiceImpl implements MotivationalQuoteService {
 
     @Override
     public MotivationalQuote getFirstMotivationalQuote() {
-        return motivationalQuoteRepository.findAll().get(0);
-//                .getFirstMotivationalQuote()
-//                .orElseThrow(() -> new DBException("Get First MotivationalQuote error!"));
+        return motivationalQuoteRepository.getFirstMotivationalQuote()
+                .orElseThrow(() -> new DBException("GET first MotivationalQuote Error!"));
     }
 }

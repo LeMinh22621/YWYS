@@ -10,6 +10,6 @@ import java.util.UUID;
 
 @Repository
 public interface MotivationalQuoteRepository extends JpaRepository<MotivationalQuote, UUID> {
-//    @Query(value = "SELECT m FROM MotivationalQuote m ORDER BY m.author ASC")
-//    Optional<MotivationalQuote> getFirstMotivationalQuote();
+    @Query(value = "SELECT * FROM motivational_quote ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Optional<MotivationalQuote> getFirstMotivationalQuote();
 }

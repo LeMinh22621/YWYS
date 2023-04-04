@@ -38,6 +38,6 @@ public class BackgroundServiceImpl implements BackgroundService {
 
     @Override
     public Background getFirstBackground() {
-        return backgroundRepository.findAll().get(0);
+        return backgroundRepository.getRandomBackground();
     }
 }
