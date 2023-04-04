@@ -1,9 +1,9 @@
 package minh.lehong.yourwindowyoursoul.service;
 
 import minh.lehong.yourwindowyoursoul.model.entity.User;
-import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
-import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.LoginRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.AuthenticationResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.text.ParseException;

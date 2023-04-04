@@ -1,4 +1,4 @@
-package minh.lehong.yourwindowyoursoul.dto;
+package minh.lehong.yourwindowyoursoul.dto.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,11 +11,6 @@ public class Response implements Serializable {
 
     @JsonProperty("data")
     private Object data;
-
-    @JsonInclude(value = JsonInclude.Include.NON_NULL)
-    @JsonProperty("meta")
-    private MetaDto meta;
-
     @JsonProperty("status")
     private boolean status;
 

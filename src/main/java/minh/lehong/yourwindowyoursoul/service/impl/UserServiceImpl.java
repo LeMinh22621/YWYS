@@ -1,16 +1,14 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
 import lombok.var;
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
-import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
-import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.LoginRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.AuthenticationResponse;
 import minh.lehong.yourwindowyoursoul.repository.UserRepository;
 import minh.lehong.yourwindowyoursoul.service.JwtService;
 import minh.lehong.yourwindowyoursoul.service.UserService;

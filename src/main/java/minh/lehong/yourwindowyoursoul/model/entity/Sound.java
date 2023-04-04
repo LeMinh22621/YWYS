@@ -31,7 +31,7 @@ public class Sound implements Serializable {
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "sounds")
+    @ManyToMany(mappedBy = "sounds",  fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<Room> rooms;

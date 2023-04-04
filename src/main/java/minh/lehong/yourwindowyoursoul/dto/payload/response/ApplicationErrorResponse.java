@@ -1,4 +1,4 @@
-package minh.lehong.yourwindowyoursoul.payload.response;
+package minh.lehong.yourwindowyoursoul.dto.payload.response;
 
 import org.springframework.http.HttpStatus;
 

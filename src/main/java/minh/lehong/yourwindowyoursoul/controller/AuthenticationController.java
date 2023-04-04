@@ -1,9 +1,9 @@
 package minh.lehong.yourwindowyoursoul.controller;
 
 import lombok.RequiredArgsConstructor;
-import minh.lehong.yourwindowyoursoul.payload.request.LoginRequest;
-import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.payload.response.AuthenticationResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.LoginRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.AuthenticationResponse;
 import minh.lehong.yourwindowyoursoul.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -14,11 +14,18 @@ import java.util.UUID;
 @Table(name = "timer")
 @EqualsAndHashCode(callSuper = true)
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class Timer extends EntityCommon implements Serializable {
+
+    public Timer()
+    {
+        this.longBreak = 900000l;
+        this.shortBreak = 300000l;
+        this.pomodoroTime = 1500000l;
+//        this.timerId = UUID.randomUUID();
+    }
     @Id
     @Column(name = "timer_id")
     @GeneratedValue(generator = "UUID")

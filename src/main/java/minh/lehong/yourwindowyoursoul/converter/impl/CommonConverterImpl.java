@@ -1,22 +1,22 @@
 package minh.lehong.yourwindowyoursoul.converter.impl;
 
 import minh.lehong.yourwindowyoursoul.constant.Constant;
+import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
-import minh.lehong.yourwindowyoursoul.dto.Response;
-import minh.lehong.yourwindowyoursoul.model.entity.User;
-import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.payload.request.UserRequest;
-import minh.lehong.yourwindowyoursoul.payload.response.UserResponse;
+import minh.lehong.yourwindowyoursoul.dto.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.model.entity.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.UserResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
-import java.util.TimeZone;
 
 @Component
 public class CommonConverterImpl implements CommonConverter {
@@ -110,5 +110,88 @@ public class CommonConverterImpl implements CommonConverter {
         oldUser.setLastName(newUser.getLastName());
 
         return oldUser;
+    }
+
+    @Override
+    public RoomDto convertRoomEntityToRoomDto(Room roomEntity) {
+        RoomDto roomDto = null;
+        if(roomEntity != null)
+        {
+            roomDto = new RoomDto();
+            roomDto.setBackgroundDto(this.convertBackgroundEntityToBackgroundDto(roomEntity.getBackground()));
+            roomDto.setTimerDto(this.convertTimerEntityToTimerDto(roomEntity.getTimer()));
+            roomDto.setMotivationalQuoteDto(this.convertMotivationalQuoteEntityToMotivationalQuoteDto(roomEntity.getMotivationalQuote()));
+            roomDto.setUserDto(this.convertUserEntityToUserDto(roomEntity.getUser()));
+        }
+        return roomDto;
+    }
+
+    @Override
+    public BackgroundDto convertBackgroundEntityToBackgroundDto(Background backgroundEntity) {
+        BackgroundDto backgroundDto = null;
+        if(backgroundEntity != null)
+        {
+            backgroundDto = new BackgroundDto();
+            backgroundDto.setThemeDto(this.convertThemeEntityToThemeDto(backgroundEntity.getTheme()));
+            backgroundDto.setBackgroundLink(backgroundEntity.getLink());
+            backgroundDto.setBackgroundId(backgroundEntity.getBackgroundId().toString());
+        }
+        return backgroundDto;
+    }
+
+    @Override
+    public MotivationalQuoteDto convertMotivationalQuoteEntityToMotivationalQuoteDto(MotivationalQuote motivationalQuoteEntity) {
+        MotivationalQuoteDto motivationalQuoteDto = null;
+        if(motivationalQuoteEntity != null)
+        {
+            motivationalQuoteDto = new MotivationalQuoteDto();
+            motivationalQuoteDto.setMotivationalQuoteId(motivationalQuoteEntity.getMotivationalQuoteId().toString());
+            motivationalQuoteDto.setContent(motivationalQuoteEntity.getContent());
+            motivationalQuoteDto.setAuthor(motivationalQuoteEntity.getAuthor());
+        }
+        return motivationalQuoteDto;
+    }
+
+    @Override
+    public ThemeDto convertThemeEntityToThemeDto(Theme themeEntity) {
+        ThemeDto themeDto = null;
+        if(themeEntity != null)
+        {
+            themeDto = new ThemeDto();
+            themeDto.setThemeId(themeEntity.getThemeId().toString());
+            themeDto.setThemeName(themeEntity.getThemeName());
+        }
+        return themeDto;
+    }
+
+    @Override
+    public TimerDto convertTimerEntityToTimerDto(Timer timerEntity) {
+        TimerDto timerDto = null;
+
+        if(timerEntity != null)
+        {
+            timerDto = new TimerDto();
+            timerDto.setTimerId(timerEntity.getTimerId().toString());
+            timerDto.setShortBreak(timerEntity.getShortBreak());
+            timerDto.setLongBreak(timerEntity.getLongBreak());
+            timerDto.setPomodoroTime(timerEntity.getPomodoroTime());
+        }
+        return timerDto;
+    }
+
+    @Override
+    public UserDto convertUserEntityToUserDto(User userEntity) {
+        UserDto userDto = null;
+        if(userEntity != null)
+        {
+            userDto = new UserDto();
+            userDto.setUserId(userEntity.getUserId().toString());
+            userDto.setRole(userEntity.getRole());
+            userDto.setAvatarUrl(userEntity.getUrlAvatar());
+            userDto.setLastName(userEntity.getLastName());
+            userDto.setFirstName(userEntity.getFirstName());
+            userDto.setEmail(userEntity.getEmail());
+        }
+        return userDto;
     }
 }

@@ -27,7 +27,7 @@ public class Background extends EntityCommon implements Serializable {
     @Column(name = "link")
     private String link;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "theme_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

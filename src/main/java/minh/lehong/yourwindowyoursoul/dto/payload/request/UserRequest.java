@@ -1,4 +1,4 @@
-package minh.lehong.yourwindowyoursoul.payload.request;
+package minh.lehong.yourwindowyoursoul.dto.payload.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

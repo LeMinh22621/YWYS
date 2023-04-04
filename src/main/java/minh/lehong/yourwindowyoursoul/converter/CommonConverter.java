@@ -1,13 +1,13 @@
 package minh.lehong.yourwindowyoursoul.converter;
 
-import minh.lehong.yourwindowyoursoul.dto.Response;
-import minh.lehong.yourwindowyoursoul.model.entity.User;
-import minh.lehong.yourwindowyoursoul.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.payload.request.UserRequest;
-import minh.lehong.yourwindowyoursoul.payload.response.UserResponse;
+import minh.lehong.yourwindowyoursoul.dto.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.model.entity.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.UserResponse;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.Date;
 
 public interface CommonConverter {
@@ -24,4 +24,11 @@ public interface CommonConverter {
     Date convertToG7(Date slowDate) throws ParseException;
 
     User convertOldUserToNewUser(User oldUser, User newUser);
+
+    RoomDto convertRoomEntityToRoomDto(Room roomEntity);
+    BackgroundDto convertBackgroundEntityToBackgroundDto(Background backgroundEntity);
+    MotivationalQuoteDto convertMotivationalQuoteEntityToMotivationalQuoteDto(MotivationalQuote motivationalQuoteEntity);
+    ThemeDto convertThemeEntityToThemeDto(Theme themeEntity);
+    TimerDto convertTimerEntityToTimerDto(Timer timerEntity);
+    UserDto convertUserEntityToUserDto(User userEntity);
 }

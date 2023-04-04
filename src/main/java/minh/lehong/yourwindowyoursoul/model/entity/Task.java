@@ -32,13 +32,13 @@ public class Task extends EntityCommon implements Serializable {
     @Column(name = "task_intend")
     private Long taskIntend;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_level_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private TaskLevel taskLevel;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

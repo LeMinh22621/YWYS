@@ -23,7 +23,7 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User extends EntityCommon implements UserDetails,Serializable {
+public class User extends EntityCommon implements UserDetails {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(generator = "UUID")
@@ -55,7 +55,7 @@ public class User extends EntityCommon implements UserDetails,Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_room", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "room_id"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
