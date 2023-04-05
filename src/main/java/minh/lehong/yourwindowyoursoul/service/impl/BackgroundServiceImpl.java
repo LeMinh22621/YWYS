@@ -1,23 +1,37 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
+import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
+import minh.lehong.yourwindowyoursoul.dto.BackgroundDto;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.Background;
+import minh.lehong.yourwindowyoursoul.model.entity.Theme;
 import minh.lehong.yourwindowyoursoul.repository.BackgroundRepository;
 import minh.lehong.yourwindowyoursoul.service.BackgroundService;
+import minh.lehong.yourwindowyoursoul.service.ThemeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.RescaleOp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BackgroundServiceImpl implements BackgroundService {
 
     @Autowired
     private BackgroundRepository backgroundRepository;
+
+    @Autowired
+    private CommonConverter commonConverter;
+
+    @Autowired
+    private ThemeService themeService;
 
     @Override
     public Background getBackgroundByBackgroundId(UUID uuid) {
@@ -29,6 +43,23 @@ public class BackgroundServiceImpl implements BackgroundService {
     public Background save(Background background) {
         return Optional.of(backgroundRepository.save(background))
                 .orElseThrow(() -> new DBException("Save Background Error!"));
+    }
+
+    @Override
+    public Response getBackgroundListByThemeId(String themeId) throws IllegalArgumentException{
+        UUID uuidThemeId = UUID.fromString(themeId);
+        Theme theme = themeService.findThemeByThemeId(uuidThemeId);
+        Response response = new Response();
+        Collection<Background> backgrounds = backgroundRepository.findBackgroundsByTheme(theme);
+        Collection<BackgroundDto> backgroundDtos = backgrounds.stream().map(background -> commonConverter.convertBackgroundEntityToBackgroundDto(background)).collect(Collectors.toList());
+
+        response.setData(backgroundDtos);
+        response.setMessage("Get List Background based on themeId is ok!");
+        response.setTitle(HttpStatus.OK.name());
+        response.setStatus(true);
+        response.setReturnCode(HttpStatus.OK.value());
+
+        return response;
     }
 
     @Override
