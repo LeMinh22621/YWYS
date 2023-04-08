@@ -17,18 +17,13 @@ public class CommonController {
 
     @GetMapping("/home")
     public String home(){
-        return "Home page";
+        return UUID.randomUUID().toString();
     }
 
     @PostMapping("/create-room")
     public ResponseEntity<?> createRoom(@RequestHeader("Authorization") String authHeader)
     {
-        Response response = null;
-//        System.out.println("1 " + UUID.randomUUID());
-//        System.out.println("2 " + UUID.randomUUID());
-//        System.out.println("3 " + UUID.randomUUID());
-//        System.out.println("4 " + UUID.randomUUID());
-        response = roomService.createRoom(authHeader);
+        Response response = roomService.createRoom(authHeader);
         return ResponseEntity.ok(response);
     }
 }

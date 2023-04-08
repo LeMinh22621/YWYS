@@ -4,11 +4,16 @@ import minh.lehong.yourwindowyoursoul.constant.Constant;
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.TaskResponse;
 import minh.lehong.yourwindowyoursoul.model.entity.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.UserResponse;
+import minh.lehong.yourwindowyoursoul.service.RoomService;
+import minh.lehong.yourwindowyoursoul.service.TaskLevelService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +22,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.logging.Level;
 
 @Component
 public class CommonConverterImpl implements CommonConverter {
@@ -118,6 +125,7 @@ public class CommonConverterImpl implements CommonConverter {
         if(roomEntity != null)
         {
             roomDto = new RoomDto();
+            roomDto.setRoomId(roomEntity.getRoomId().toString());
             roomDto.setBackgroundDto(this.convertBackgroundEntityToBackgroundDto(roomEntity.getBackground()));
             roomDto.setTimerDto(this.convertTimerEntityToTimerDto(roomEntity.getTimer()));
             roomDto.setMotivationalQuoteDto(this.convertMotivationalQuoteEntityToMotivationalQuoteDto(roomEntity.getMotivationalQuote()));
@@ -193,5 +201,81 @@ public class CommonConverterImpl implements CommonConverter {
             userDto.setEmail(userEntity.getEmail());
         }
         return userDto;
+    }
+
+    private TaskLevelDto convertTaskLevelEntityToTaskLevelDto(TaskLevel taskLevelEntity)
+    {
+        TaskLevelDto taskLevelDto = null;
+        if(taskLevelEntity != null)
+        {
+            taskLevelDto = new TaskLevelDto();
+            taskLevelDto.setTaskLevelDtoId(taskLevelEntity.getTaskLevelId().toString());
+            taskLevelDto.setTaskLevelName(taskLevelEntity.getName());
+        }
+        return taskLevelDto;
+    }
+    private TaskLevel convertTaskLevelDtoToTaskLevelEntity(TaskLevelDto taskLevelDto)
+    {
+        TaskLevel taskLevelEntity = null;
+        if(taskLevelDto != null)
+        {
+            taskLevelEntity = new TaskLevel();
+            taskLevelEntity.setTaskLevelId(UUID.fromString(taskLevelDto.getTaskLevelDtoId()));
+            taskLevelEntity.setName(taskLevelDto.getTaskLevelName());
+        }
+        return taskLevelEntity;
+    }
+
+    @Override
+    public Task convertTaskDtoToTaskEntity(TaskDto taskDto) {
+        Task task = null;
+        if(taskDto != null)
+        {
+            task = new Task();
+            task.setTaskContent(taskDto.getTaskContent());
+            task.setTaskIntend(taskDto.getTaskIntend());
+            task.setTaskPriority(task.getTaskPriority());
+            task.setTaskLevel(taskDto.getTaskLevel());
+            task.setRoom(taskDto.getRoom());
+            task.setIsDone(taskDto.getIsDone());
+            task.setCreateDate(taskDto.getCreateDate());
+            task.setUpdatedDate(taskDto.getUpdateDate());
+            task.setIsDeleted(taskDto.getIsDeleted());
+        }
+        return task;
+    }
+
+    @Override
+    public void convertTaskRequestToTaskDto(TaskRequest taskRequest, TaskDto taskDto) throws ParseException {
+        if(taskRequest == null || taskDto == null)
+            return;
+        taskDto.setTaskDtoId(UUID.randomUUID().toString());
+        taskDto.setTaskContent(taskRequest.getTaskContent());
+        taskDto.setTaskIntend(taskRequest.getTaskIntend());
+        taskDto.setTaskPriority(taskRequest.getTaskPriority());
+        taskDto.setIsDeleted(false);
+        taskDto.setIsDone(false);
+        taskDto.setCreateDate(this.convertToG7(new Date()));
+        taskDto.setUpdateDate(this.convertToG7(new Date()));
+    }
+
+    @Override
+    public TaskResponse convertTaskDtoToTaskResponse(TaskDto taskDto) {
+        TaskResponse taskResponse = null;
+        if(taskDto != null)
+        {
+            taskResponse = new TaskResponse();
+            taskResponse.setTaskId(taskDto.getTaskDtoId());
+            taskResponse.setTaskContent(taskDto.getTaskContent());
+            taskResponse.setTaskIntend(taskDto.getTaskIntend());
+            taskResponse.setTaskPriority(taskDto.getTaskPriority());
+            taskResponse.setRoomId(taskDto.getRoom().getRoomId().toString());
+            taskResponse.setTaskLevelDto(this.convertTaskLevelEntityToTaskLevelDto(taskDto.getTaskLevel()));
+            taskResponse.setIsDone(taskDto.getIsDone());
+            taskResponse.setIsDeleted(taskDto.getIsDeleted());
+            taskResponse.setUpdateDate(taskDto.getUpdateDate());
+            taskResponse.setCreateDate(taskDto.getCreateDate());
+        }
+        return  taskResponse;
     }
 }

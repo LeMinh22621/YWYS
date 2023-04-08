@@ -1,7 +1,9 @@
 package minh.lehong.yourwindowyoursoul.converter;
 
 import minh.lehong.yourwindowyoursoul.dto.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.TaskResponse;
 import minh.lehong.yourwindowyoursoul.model.entity.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
@@ -31,4 +33,10 @@ public interface CommonConverter {
     ThemeDto convertThemeEntityToThemeDto(Theme themeEntity);
     TimerDto convertTimerEntityToTimerDto(Timer timerEntity);
     UserDto convertUserEntityToUserDto(User userEntity);
+
+    Task convertTaskDtoToTaskEntity(TaskDto taskDto);
+
+    void convertTaskRequestToTaskDto(TaskRequest taskRequest, TaskDto taskDto) throws ParseException;
+
+    TaskResponse convertTaskDtoToTaskResponse(TaskDto taskDto);
 }

@@ -23,7 +23,7 @@ public abstract class EntityCommon{
 
     @Column(name = "is_deleted", length = 1)
     @JsonProperty("is_deleted")
-    private int isDeleted;
+    private Boolean isDeleted;
 
     @PrePersist
     protected void onCreate() {

@@ -26,6 +26,9 @@ public class Task extends EntityCommon implements Serializable {
     @Type(type = "uuid-char")
     private UUID taskId;
 
+    @Column(name = "task_content")
+    private String taskContent;
+
     @Column(name = "task_priority")
     private Integer taskPriority;
 
@@ -33,7 +36,7 @@ public class Task extends EntityCommon implements Serializable {
     private Long taskIntend;
 
     @Column(name = "is_done")
-    private Long isDone;
+    private Boolean isDone;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_level_id")
