@@ -10,7 +10,10 @@ import java.util.UUID;
 public interface RoomService {
     Room saveRoom(Room room);
 
-    Room findRoomById(UUID roomUuid);
+    Response getRoomFromRoomId(String roomId);
+    Room findRoomById(UUID roomId);
 
     Response createRoom(String authHeader);
+
+    Response getMyRooms(String authHeader);
 }

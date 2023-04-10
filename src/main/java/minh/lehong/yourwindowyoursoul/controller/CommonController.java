@@ -26,4 +26,11 @@ public class CommonController {
         Response response = roomService.createRoom(authHeader);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/my-rooms")
+    public ResponseEntity<?> getMyRooms(@RequestHeader("Authorization") String authHeader)
+    {
+        Response response = roomService.getMyRooms(authHeader);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -25,8 +25,8 @@ public class Room extends EntityCommon implements Serializable {
         this.user = user;
         this.background = background;
         this.motivationalQuote = motivationalQuote;
-
         this.timer = timer;
+        this.roomId = UUID.randomUUID();
     }
 
     @Id
@@ -48,8 +48,8 @@ public class Room extends EntityCommon implements Serializable {
     @ToString.Exclude
     private Background background;
 
-    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "timer_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Timer timer;

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.jws.Oneway;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,14 +42,29 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room saveRoom(Room room) {
-        return Optional.of(roomRepository.save(room))
-                .orElseThrow(() -> new DBException("No BackgroundID found!"));
+        return roomRepository.save(room);
     }
 
     @Override
-    public Room findRoomById(UUID roomUuid) {
-        return roomRepository.findById(roomUuid)
-                .orElseThrow(() -> new DBException("No BackgroundID found!"));
+    public Response getRoomFromRoomId(String roomId) throws IllegalArgumentException{
+        Response response = null;
+        Room room = this.findRoomById(UUID.fromString(roomId));
+        if(room != null)
+        {
+            response = new Response();
+            response.setData(this.commonConverter.convertRoomEntityToRoomDto(room));
+            response.setStatus(true);
+            response.setReturnCode(HttpStatus.OK.value());
+            response.setTitle(HttpStatus.OK.name());
+            response.setMessage(String.format("Get Room By %s Success!", roomId));
+        }
+        return response;
+    }
+
+    @Override
+    public Room findRoomById(UUID roomId) {
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new DBException("GET Room by RoomId error!"));
     }
 
     @Override
@@ -58,16 +75,12 @@ public class RoomServiceImpl implements RoomService {
         User user = userService.findByEmail(email);
 
         Background background = backgroundService.getFirstBackground();
-
         MotivationalQuote motivationalQuote = motivationalQuoteService.getFirstMotivationalQuote();
-
         Timer timer = new Timer();
-        if(timerService.save(timer) == null)
-            throw new DBException("Create timer Error!");
 
         Room room = new Room(user, background, motivationalQuote, timer);
 
-        if(this.saveRoom(room) != null)
+        if((room = this.saveRoom(room)) != null)
         {
             response = new Response();
             response.setData(commonConverter.convertRoomEntityToRoomDto(room));
@@ -75,6 +88,26 @@ public class RoomServiceImpl implements RoomService {
             response.setStatus(true);
             response.setReturnCode(HttpStatus.CREATED.value());
             response.setMessage(HttpStatus.CREATED.name());
+        }
+        return response;
+    }
+    @Override
+    public Response getMyRooms(String authHeader) {
+        Response response = null;
+
+        String email = jwtService.extractUsername(authHeader.substring(7));
+        User user = userService.findByEmail(email);
+
+        Collection<UUID> roomIds = roomRepository.findRoomIdBy(user.getUserId());
+
+        if(roomIds != null)
+        {
+            response = new Response();
+            response.setData(roomIds);
+            response.setReturnCode(HttpStatus.OK.value());
+            response.setMessage("Get my rooms success!");
+            response.setTitle(HttpStatus.OK.name());
+            response.setStatus(true);
         }
         return response;
     }

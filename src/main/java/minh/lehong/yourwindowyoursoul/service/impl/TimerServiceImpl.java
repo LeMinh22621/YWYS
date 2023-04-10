@@ -19,12 +19,11 @@ public class TimerServiceImpl implements TimerService {
     @Override
     public Timer findById(UUID uuid) {
         return timerRepository.findById(uuid)
-                .orElseThrow(() -> new DBException("No BackgroundID found!"));
+                .orElseThrow(() -> new DBException("Get Timer by TimerId Error!"));
     }
 
     @Override
     public Timer save(Timer timer) {
-        return Optional.of(timerRepository.save(timer))
-                .orElseThrow(() -> new DBException("No BackgroundID found!"));
+        return timerRepository.save(timer);
     }
 }

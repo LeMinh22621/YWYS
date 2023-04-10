@@ -17,14 +17,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Timer extends EntityCommon implements Serializable {
+public class Timer extends EntityCommon {
 
     public Timer()
     {
+        this.timerId = UUID.randomUUID();
         this.longBreak = 900000l;
         this.shortBreak = 300000l;
         this.pomodoroTime = 1500000l;
-//        this.timerId = UUID.randomUUID();
     }
     @Id
     @Column(name = "timer_id")
