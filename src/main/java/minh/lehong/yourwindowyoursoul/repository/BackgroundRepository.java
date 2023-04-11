@@ -17,4 +17,7 @@ public interface BackgroundRepository  extends JpaRepository<Background, UUID> {
     Background getRandomBackground();
 
     Collection<Background> findBackgroundsByTheme(Theme theme);
+
+    @Query(value = "SELECT * FROM background WHERE theme_id = ?1 ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Background getRandomBackgroundByTheme(String themeId);
 }

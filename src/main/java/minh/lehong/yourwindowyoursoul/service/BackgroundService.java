@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.service;
 
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.model.entity.Background;
+import minh.lehong.yourwindowyoursoul.model.entity.Theme;
 
 import javax.swing.text.html.Option;
 import java.util.Collection;
@@ -18,4 +19,6 @@ public interface BackgroundService {
     Collection<Background> getAllBackgrounds();
 
     Background getFirstBackground();
+
+    Background getRandomBackgroundByTheme(String themeId);
 }

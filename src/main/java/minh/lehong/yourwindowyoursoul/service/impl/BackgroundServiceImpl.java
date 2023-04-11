@@ -71,4 +71,9 @@ public class BackgroundServiceImpl implements BackgroundService {
     public Background getFirstBackground() {
         return backgroundRepository.getRandomBackground();
     }
+
+    @Override
+    public Background getRandomBackgroundByTheme(String themeId) {
+        return backgroundRepository.getRandomBackgroundByTheme(themeId);
+    }
 }

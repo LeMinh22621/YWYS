@@ -16,4 +16,8 @@ public interface RoomService {
     Response createRoom(String authHeader);
 
     Response getMyRooms(String authHeader);
+
+    Response shuffleMotivationalQuote();
+
+    Response shuffleBackgroundByThemeId(String themeId);
 }

@@ -11,12 +11,9 @@ import minh.lehong.yourwindowyoursoul.service.TaskService;
 import minh.lehong.yourwindowyoursoul.service.TimerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/room")
@@ -44,6 +41,20 @@ public class RoomController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("shuffle-motivational-quote")
+    public ResponseEntity<?> shuffleMotivationalQuote(){
+        Response response = roomService.shuffleMotivationalQuote();
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("shuffle-background-by-theme-id")
+    public ResponseEntity<?> shuffleBackgroundByThemeId(@RequestParam("theme_id") String themeId){
+        Response response = roomService.shuffleBackgroundByThemeId(themeId);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("create-task")
     public ResponseEntity<?> createTask(@RequestBody TaskRequest taskRequest) throws ParseException {
         Response response = taskService.save(taskRequest);
