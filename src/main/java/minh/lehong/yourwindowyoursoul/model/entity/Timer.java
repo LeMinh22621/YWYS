@@ -25,6 +25,7 @@ public class Timer extends EntityCommon {
         this.longBreak = 900000l;
         this.shortBreak = 300000l;
         this.pomodoroTime = 1500000l;
+        setIsDeleted(false);
     }
     @Id
     @Column(name = "timer_id")

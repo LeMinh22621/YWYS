@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.configuration;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import minh.lehong.yourwindowyoursoul.configuration.security.JwtAuthenticationFilter;
 import org.hibernate.boot.jaxb.hbm.spi.Adapter1;

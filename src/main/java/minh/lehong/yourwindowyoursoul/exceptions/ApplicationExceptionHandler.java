@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import minh.lehong.yourwindowyoursoul.constant.enums.ExceptionEnums;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.ApplicationErrorResponse;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -90,6 +92,14 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
+		ex.printStackTrace();
+		ApplicationErrorResponse error = new ApplicationErrorResponse();
+		error.setMessage(ex.getMessage());
+		error.setStatus(HttpStatus.UNAUTHORIZED);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+	}
+	@ExceptionHandler(ExpiredJwtException.class)
+	public ResponseEntity<Object> handleExpiredException(ExpiredJwtException ex) {
 		ex.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(ex.getMessage());

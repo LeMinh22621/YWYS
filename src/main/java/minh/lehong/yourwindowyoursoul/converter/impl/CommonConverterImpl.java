@@ -183,6 +183,9 @@ public class CommonConverterImpl implements CommonConverter {
             timerDto.setShortBreak(timerEntity.getShortBreak());
             timerDto.setLongBreak(timerEntity.getLongBreak());
             timerDto.setPomodoroTime(timerEntity.getPomodoroTime());
+            timerDto.setIsDeleted(timerEntity.getIsDeleted());
+            timerDto.setCreateDate(timerEntity.getCreateDate());
+            timerDto.setUpdateDate(timerEntity.getUpdatedDate());
         }
         return timerDto;
     }
@@ -277,5 +280,22 @@ public class CommonConverterImpl implements CommonConverter {
             taskResponse.setCreateDate(taskDto.getCreateDate());
         }
         return  taskResponse;
+    }
+
+    @Override
+    public Timer convertTimerDtoToTimerEntity(String roomId, TimerDto timerDto) {
+        Timer timer = null;
+        if(timerDto != null && roomId.equals(timerDto.getTimerId()))
+        {
+            timer = new Timer();
+            timer.setTimerId(UUID.fromString(timerDto.getTimerId()));
+            timer.setPomodoroTime(timerDto.getPomodoroTime());
+            timer.setLongBreak(timerDto.getLongBreak());
+            timer.setShortBreak(timerDto.getShortBreak());
+            timer.setIsDeleted(timerDto.getIsDeleted());
+            timer.setCreateDate(timerDto.getCreateDate());
+            timer.setUpdatedDate(timerDto.getUpdateDate());
+        }
+        return timer;
     }
 }

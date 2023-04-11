@@ -39,4 +39,6 @@ public interface CommonConverter {
     void convertTaskRequestToTaskDto(TaskRequest taskRequest, TaskDto taskDto) throws ParseException;
 
     TaskResponse convertTaskDtoToTaskResponse(TaskDto taskDto);
+
+    Timer convertTimerDtoToTimerEntity(String roomId, TimerDto timerDto);
 }

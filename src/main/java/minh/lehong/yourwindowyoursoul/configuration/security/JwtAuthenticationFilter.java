@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.configuration.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import minh.lehong.yourwindowyoursoul.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;

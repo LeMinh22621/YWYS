@@ -1,6 +1,7 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -26,7 +27,7 @@ public class JwtServiceImpl implements JwtService {
     private String expiredTime;
 
     @Override
-    public String extractUsername(String token) {
+    public String extractUsername(String token) throws ExpiredJwtException{
 
         return extractClaim(token, Claims::getSubject);
     }
@@ -37,7 +38,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) throws ExpiredJwtException{
         String username = this.extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
@@ -56,11 +57,11 @@ public class JwtServiceImpl implements JwtService {
         return newToken;
     }
 
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(String token) throws ExpiredJwtException{
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(String token) throws ExpiredJwtException{
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -76,11 +77,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws ExpiredJwtException{
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token)
+    private Claims extractAllClaims(String token) throws ExpiredJwtException
     {
         return Jwts
                 .parserBuilder()
