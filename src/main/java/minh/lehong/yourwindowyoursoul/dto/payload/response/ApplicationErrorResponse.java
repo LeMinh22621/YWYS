@@ -24,4 +24,16 @@ public class ApplicationErrorResponse {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+//	@Override
+//	public String toString() {
+//		StringBuilder stringBuilder = new StringBuilder();
+//		stringBuilder.append("{");
+//		stringBuilder.append("message:");
+//		stringBuilder.append(this.message);
+//		stringBuilder.append("status:");
+//		stringBuilder.append(this.status.value());
+//		stringBuilder.append("}");
+//		return stringBuilder.toString();
+//	}
 }

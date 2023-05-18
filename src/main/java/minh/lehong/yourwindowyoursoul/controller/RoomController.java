@@ -17,6 +17,7 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1/room")
+@CrossOrigin(origins = "http://localhost:3000")
 public class RoomController {
     @Autowired
     private BackgroundService backgroundService;

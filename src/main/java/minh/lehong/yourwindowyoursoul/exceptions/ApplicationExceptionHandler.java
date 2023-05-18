@@ -12,17 +12,18 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.security.SignatureException;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-@ControllerAdvice
+//@ControllerAdvice
+@RestControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Override
@@ -74,7 +75,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ExceptionHandler(DBException.class)
 	public ResponseEntity<ApplicationErrorResponse> handlerDBException(DBException exception) {
-//		exception.printStackTrace();
+		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(exception.getMesssage());
 		error.setStatus(exception.getStatus());
@@ -124,4 +125,22 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 	}
+
+//	@ExceptionHandler(MethodArgumentNotValidException.class)
+//	public ResponseEntity<Object> handleValidationExceptions(
+//			MethodArgumentNotValidException exception) {
+////		Map<String, String> errors = new HashMap<>();
+////		ex.getBindingResult().getAllErrors().forEach((error) -> {
+////			String fieldName = ((FieldError) error).getField();
+////			String errorMessage = error.getDefaultMessage();
+////			errors.put(fieldName, errorMessage);
+////		});
+////		return errors;
+//
+////		exception.printStackTrace();
+//		ApplicationErrorResponse error = new ApplicationErrorResponse();
+//		error.setMessage(exception.getMessage());
+////		error.setStatus(exception.gets);
+//		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+//	}
 }

@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.var;
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.LoginRequest;
@@ -107,6 +108,20 @@ public class UserServiceImpl implements UserService {
     public AuthenticationResponse logout(String tokenHeader) throws ParseException, ExpiredJwtException, Exception {
         String newToken = jwtService.invalidToken(tokenHeader);
         return AuthenticationResponse.builder().token(newToken).build();
+    }
+
+    @Override
+    public Response checkExpiredToken(String token) {
+        UserDetails userDetails = userRepository.findByEmail(jwtService.extractUsername(token)).orElseThrow(() -> new DBException("not Found User by Email extracted from token"));
+
+        Response response = new Response();
+        response.setData(userDetails);
+        response.setStatus(jwtService.isTokenValid(token, userDetails));
+        response.setReturnCode(HttpStatus.OK.value());
+        response.setTitle(HttpStatus.OK.name());
+        response.setMessage("Check Expired Token Success");
+
+        return response;
     }
 
     @Override

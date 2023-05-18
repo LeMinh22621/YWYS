@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.service;
 
+import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.LoginRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
@@ -21,4 +22,6 @@ public interface UserService extends UserDetailsService {
     AuthenticationResponse login(LoginRequest request) throws Exception;
 
     AuthenticationResponse logout(String tokenHeader) throws ParseException, Exception;
+
+    Response checkExpiredToken(String token);
 }
