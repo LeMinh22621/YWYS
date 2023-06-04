@@ -9,6 +9,8 @@ import minh.lehong.yourwindowyoursoul.model.entity.Background;
 import minh.lehong.yourwindowyoursoul.model.entity.MotivationalQuote;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,4 +25,12 @@ public class RoomDto {
     private MotivationalQuoteDto motivationalQuoteDto;
     @JsonProperty("user")
     private UserDto userDto;
+
+    @JsonProperty("is_deleted")
+    private Boolean isDeleted;
+
+    @JsonProperty("create_date")
+    private Date createDate;
+    @JsonProperty("update_date")
+    private Date updateDate;
 }

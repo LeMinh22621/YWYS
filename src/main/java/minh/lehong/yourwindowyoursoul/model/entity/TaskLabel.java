@@ -6,35 +6,31 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "background")
-@EqualsAndHashCode(callSuper = true)
-@Builder
+@Table(name = "task_label")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Background extends EntityCommon implements Serializable {
+public class TaskLabel extends EntityCommon implements Serializable {
     @Id
-    @Column(name = "background_id")
+    @Column(name = "task_label_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID backgroundId;
-    @Column(name = "link")
-    private String link;
+    private UUID taskLabelId;
 
     @ManyToOne
-    @JoinColumn(name = "theme_id")
+    @JoinColumn(name = "task_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Theme theme;
+    private Task task;
 
-    @OneToMany(mappedBy = "background", fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "label_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Room> rooms;
+    private Label label;
 }

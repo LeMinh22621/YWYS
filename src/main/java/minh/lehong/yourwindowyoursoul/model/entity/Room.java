@@ -7,7 +7,6 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -42,13 +41,13 @@ public class Room extends EntityCommon implements Serializable {
     @EqualsAndHashCode.Exclude
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "background_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Background background;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "timer_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -63,7 +62,12 @@ public class Room extends EntityCommon implements Serializable {
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Task> tasks;
+    private Collection<TaskManager> taskManagers;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<Label> labels;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "room_sound", joinColumns = @JoinColumn(name = "room_id"), inverseJoinColumns = @JoinColumn(name = "sound_id"))

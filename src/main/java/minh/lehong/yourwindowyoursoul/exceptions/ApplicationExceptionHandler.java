@@ -25,7 +25,6 @@ import java.util.Objects;
 //@ControllerAdvice
 @RestControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
-
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -77,7 +76,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	public ResponseEntity<ApplicationErrorResponse> handlerDBException(DBException exception) {
 		exception.printStackTrace();
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
-		error.setMessage(exception.getMesssage());
+		error.setMessage(exception.getMessage());
 		error.setStatus(exception.getStatus());
 		return new ResponseEntity(error, exception.getStatus());
 	}
@@ -102,12 +101,12 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	@ExceptionHandler(ExpiredJwtException.class)
 	public ResponseEntity<Object> handleExpiredException(ExpiredJwtException ex) {
 		ex.printStackTrace();
+		System.out.println("---------------------");
 		ApplicationErrorResponse error = new ApplicationErrorResponse();
 		error.setMessage(ex.getMessage());
 		error.setStatus(HttpStatus.UNAUTHORIZED);
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
 	}
-
 	@ExceptionHandler(SignatureException.class)
 	public ResponseEntity<Object> handleAccessDeniedException(SignatureException ex) {
 		ex.printStackTrace();

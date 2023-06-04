@@ -1,18 +1,15 @@
 package minh.lehong.yourwindowyoursoul.converter.impl;
 
 import minh.lehong.yourwindowyoursoul.constant.Constant;
-import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.*;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.TaskResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.*;
 import minh.lehong.yourwindowyoursoul.model.entity.*;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.UserResponse;
+import minh.lehong.yourwindowyoursoul.service.LabelService;
 import minh.lehong.yourwindowyoursoul.service.RoomService;
-import minh.lehong.yourwindowyoursoul.service.TaskLevelService;
+import minh.lehong.yourwindowyoursoul.service.TaskManagerService;
+import minh.lehong.yourwindowyoursoul.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -23,12 +20,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.logging.Level;
 
 @Component
 public class CommonConverterImpl implements CommonConverter {
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private TaskManagerService taskManagerService;
+
+    @Autowired
+    private LabelService labelService;
+
+    @Autowired
+    private RoomService roomService;
+
     @Override
-    public UserResponse convertUserEntityToUserData(final User user) throws ParseException {
+    public UserResponse convertUserEntityToUserRespond(final User user) throws ParseException {
         UserResponse userResponse = null;
         if(user != null){
             // convert to right format
@@ -50,36 +58,36 @@ public class CommonConverterImpl implements CommonConverter {
         }
         return userResponse;
     }
-    @Override
-    public User convertUserRequestToUserEntity(final UserRequest userRequest) {
-        User user = null;
-        if(userRequest != null){
-            user = new User();
-            user.setEmail(userRequest.getEmail());
-            user.setFirstName(userRequest.getFirstName());
-            user.setLastName(userRequest.getLastName());
-            user.setUrlAvatar(userRequest.getUrlAvatar());
-            user.setPassword(userRequest.getPassword());
-            user.setCreateDate(userRequest.getDateCreated());
-            user.setUpdatedDate(userRequest.getDateModified());
-        }
-        return user;
-    }
-    public User convertSignupRequestToUserEntity(final SignupRequest signupRequest)
-    {
-        User user = null;
-        if(signupRequest != null){
-            user = new User();
-            user.setEmail(signupRequest.getEmail());
-            user.setFirstName(signupRequest.getFirstName());
-            user.setLastName(signupRequest.getLastName());
-            user.setUrlAvatar(null);
-            user.setPassword(signupRequest.getPassword());
-            user.setCreateDate(new Date());
-            user.setUpdatedDate(new Date());
-        }
-        return user;
-    }
+//    @Override
+//    public User convertUserRequestToUserEntity(final UserRequest userRequest) {
+//        User user = null;
+//        if(userRequest != null){
+//            user = new User();
+//            user.setEmail(userRequest.getEmail());
+//            user.setFirstName(userRequest.getFirstName());
+//            user.setLastName(userRequest.getLastName());
+//            user.setUrlAvatar(userRequest.getUrlAvatar());
+//            user.setPassword(userRequest.getPassword());
+//            user.setCreateDate(userRequest.getDateCreated());
+//            user.setUpdatedDate(userRequest.getDateModified());
+//        }
+//        return user;
+//    }
+//    public User convertSignupRequestToUserEntity(final SignupRequest signupRequest)
+//    {
+//        User user = null;
+//        if(signupRequest != null){
+//            user = new User();
+//            user.setEmail(signupRequest.getEmail());
+//            user.setFirstName(signupRequest.getFirstName());
+//            user.setLastName(signupRequest.getLastName());
+//            user.setUrlAvatar(null);
+//            user.setPassword(signupRequest.getPassword());
+//            user.setCreateDate(new Date());
+//            user.setUpdatedDate(new Date());
+//        }
+//        return user;
+//    }
 
     @Override
     public Response convertToResponse(final Object data, final int returnCode, final String message, String... title) {
@@ -88,9 +96,6 @@ public class CommonConverterImpl implements CommonConverter {
         response.setMessage(message);
         response.setStatus(returnCode == Constant.RETURN_OK);
         response.setReturnCode(returnCode);
-        if (Objects.nonNull(title) && title.length > 0) {
-            response.setTitle(title[0]);
-        }
         return response;
     }
 
@@ -130,6 +135,9 @@ public class CommonConverterImpl implements CommonConverter {
             roomDto.setTimerDto(this.convertTimerEntityToTimerDto(roomEntity.getTimer()));
             roomDto.setMotivationalQuoteDto(this.convertMotivationalQuoteEntityToMotivationalQuoteDto(roomEntity.getMotivationalQuote()));
             roomDto.setUserDto(this.convertUserEntityToUserDto(roomEntity.getUser()));
+            roomDto.setIsDeleted(roomEntity.getIsDeleted());
+            roomDto.setCreateDate(roomEntity.getCreateDate());
+            roomDto.setUpdateDate(roomEntity.getUpdatedDate());
         }
         return roomDto;
     }
@@ -196,70 +204,90 @@ public class CommonConverterImpl implements CommonConverter {
         if(userEntity != null)
         {
             userDto = new UserDto();
-            userDto.setUserId(userEntity.getUserId().toString());
+            userDto.setUserId(userEntity.getUserId());
             userDto.setRole(userEntity.getRole());
-            userDto.setAvatarUrl(userEntity.getUrlAvatar());
+            userDto.setUrlAvatar(userEntity.getUrlAvatar());
             userDto.setLastName(userEntity.getLastName());
             userDto.setFirstName(userEntity.getFirstName());
             userDto.setEmail(userEntity.getEmail());
+            userDto.setPassword(userEntity.getPassword());
+            userDto.setDateCreated(userEntity.getCreateDate());
+            userDto.setDateModified(userEntity.getUpdatedDate());
         }
         return userDto;
     }
 
-    private TaskLevelDto convertTaskLevelEntityToTaskLevelDto(TaskLevel taskLevelEntity)
+    @Override
+    public LabelDto convertLabelEntityToLabelDto(Label labelEntity)
     {
-        TaskLevelDto taskLevelDto = null;
-        if(taskLevelEntity != null)
+        LabelDto labelDto = null;
+        if(labelEntity != null)
         {
-            taskLevelDto = new TaskLevelDto();
-            taskLevelDto.setTaskLevelDtoId(taskLevelEntity.getTaskLevelId().toString());
-            taskLevelDto.setTaskLevelName(taskLevelEntity.getName());
+            labelDto = new LabelDto();
+            labelDto.setLabelDtoId(labelEntity.getLabelId().toString());
+            labelDto.setLabelName(labelEntity.getName());
+            labelDto.setColor(labelEntity.getColor());
+            labelDto.setIsDeleted(labelEntity.getIsDeleted());
+            labelDto.setUpdateDate(labelEntity.getUpdatedDate());
+            labelDto.setCreateDate(labelEntity.getCreateDate());
+            labelDto.setRoomDto(this.convertRoomEntityToRoomDto(labelEntity.getRoom()));
         }
-        return taskLevelDto;
+        return labelDto;
     }
-    private TaskLevel convertTaskLevelDtoToTaskLevelEntity(TaskLevelDto taskLevelDto)
+    @Override
+    public Label convertLabelDtoToLabelEntity(Label label, LabelDto labelDto)
     {
-        TaskLevel taskLevelEntity = null;
-        if(taskLevelDto != null)
+        if(labelDto != null)
         {
-            taskLevelEntity = new TaskLevel();
-            taskLevelEntity.setTaskLevelId(UUID.fromString(taskLevelDto.getTaskLevelDtoId()));
-            taskLevelEntity.setName(taskLevelDto.getTaskLevelName());
+            if(labelDto.getLabelDtoId() != null)
+                label.setLabelId(UUID.fromString(labelDto.getLabelDtoId()));
+            label.setName(labelDto.getLabelName());
+            label.setColor(labelDto.getColor());
+            label.setIsDeleted(labelDto.getIsDeleted());
+            label.setCreateDate(labelDto.getCreateDate());
+            label.setUpdatedDate(labelDto.getUpdateDate());
+            label.setRoom(this.convertRoomDtoToRoomEntity(new Room(), labelDto.getRoomDto()));
         }
-        return taskLevelEntity;
+        return label;
     }
 
     @Override
-    public Task convertTaskDtoToTaskEntity(TaskDto taskDto) {
-        Task task = null;
+    public Task convertTaskDtoToTaskEntity(Task task, TaskDto taskDto) {
         if(taskDto != null)
         {
-            task = new Task();
+            if(taskDto.getTaskDtoId() != null)
+                task.setTaskId(UUID.fromString(taskDto.getTaskDtoId()));
             task.setTaskContent(taskDto.getTaskContent());
             task.setTaskIntend(taskDto.getTaskIntend());
-            task.setTaskPriority(task.getTaskPriority());
-            task.setTaskLevel(taskDto.getTaskLevel());
-            task.setRoom(taskDto.getRoom());
+            task.setTaskStartDate(taskDto.getTaskStartDate());
+            task.setTaskStartTime(taskDto.getTaskStartTime());
             task.setIsDone(taskDto.getIsDone());
             task.setCreateDate(taskDto.getCreateDate());
             task.setUpdatedDate(taskDto.getUpdateDate());
             task.setIsDeleted(taskDto.getIsDeleted());
+            task.setTaskManager(this.convertTaskManagerDtoToTaskManagerEntity(new TaskManager(), taskDto.getTaskManagerDto()));
         }
         return task;
     }
 
     @Override
-    public void convertTaskRequestToTaskDto(TaskRequest taskRequest, TaskDto taskDto) throws ParseException {
-        if(taskRequest == null || taskDto == null)
-            return;
-        taskDto.setTaskDtoId(UUID.randomUUID().toString());
-        taskDto.setTaskContent(taskRequest.getTaskContent());
-        taskDto.setTaskIntend(taskRequest.getTaskIntend());
-        taskDto.setTaskPriority(taskRequest.getTaskPriority());
-        taskDto.setIsDeleted(false);
-        taskDto.setIsDone(false);
-        taskDto.setCreateDate(this.convertToG7(new Date()));
-        taskDto.setUpdateDate(this.convertToG7(new Date()));
+    public TaskDto convertTaskRequestToTaskDto(TaskDto taskDto, TaskRequest taskRequest) throws ParseException {
+        if(taskRequest != null)
+        {
+            if(taskRequest.getTaskContent() != null)
+                taskDto.setTaskContent(taskRequest.getTaskContent());
+            if(taskRequest.getTaskIntend() != null)
+                taskDto.setTaskIntend(taskRequest.getTaskIntend());
+            if(taskRequest.getTaskStartDate() != null)
+                taskDto.setTaskStartDate(taskRequest.getTaskStartDate());
+            if(taskRequest.getTaskStartTime() != null)
+                taskDto.setTaskStartTime(taskRequest.getTaskStartTime());
+            if(taskRequest.getIsDone() != null)
+                taskDto.setIsDone(taskRequest.getIsDone());
+            // miss taskManager
+            return taskDto;
+        }
+        return taskDto;
     }
 
     @Override
@@ -271,24 +299,23 @@ public class CommonConverterImpl implements CommonConverter {
             taskResponse.setTaskId(taskDto.getTaskDtoId());
             taskResponse.setTaskContent(taskDto.getTaskContent());
             taskResponse.setTaskIntend(taskDto.getTaskIntend());
-            taskResponse.setTaskPriority(taskDto.getTaskPriority());
-            taskResponse.setRoomId(taskDto.getRoom().getRoomId().toString());
-            taskResponse.setTaskLevelDto(this.convertTaskLevelEntityToTaskLevelDto(taskDto.getTaskLevel()));
+            taskResponse.setTaskStartDate(taskDto.getTaskStartDate());
+            taskResponse.setTaskStartTime(taskDto.getTaskStartTime());
             taskResponse.setIsDone(taskDto.getIsDone());
             taskResponse.setIsDeleted(taskDto.getIsDeleted());
             taskResponse.setUpdateDate(taskDto.getUpdateDate());
             taskResponse.setCreateDate(taskDto.getCreateDate());
+            taskResponse.setTaskManagerId(taskDto.getTaskManagerDto().getTaskManagerId());
         }
         return  taskResponse;
     }
 
     @Override
-    public Timer convertTimerDtoToTimerEntity(String roomId, TimerDto timerDto) {
-        Timer timer = null;
-        if(timerDto != null && roomId.equals(timerDto.getTimerId()))
+    public Timer convertTimerDtoToTimerEntity(Timer timer, TimerDto timerDto) {
+        if(timerDto != null)
         {
-            timer = new Timer();
-            timer.setTimerId(UUID.fromString(timerDto.getTimerId()));
+            if(timerDto.getTimerId() != null)
+                timer.setTimerId(UUID.fromString(timerDto.getTimerId()));
             timer.setPomodoroTime(timerDto.getPomodoroTime());
             timer.setLongBreak(timerDto.getLongBreak());
             timer.setShortBreak(timerDto.getShortBreak());
@@ -297,5 +324,195 @@ public class CommonConverterImpl implements CommonConverter {
             timer.setUpdatedDate(timerDto.getUpdateDate());
         }
         return timer;
+    }
+
+    @Override
+    public TaskManagerDto convertTaskManagerEntityToTaskManagerDto(TaskManager taskManager) {
+        TaskManagerDto taskManagerDto = null;
+        if(taskManager != null)
+        {
+            taskManagerDto = new TaskManagerDto();
+            taskManagerDto.setTaskManagerId(taskManager.getTaskManagerId().toString());
+            taskManagerDto.setTaskManagerTitle(taskManager.getTaskManagerTitle());
+            taskManagerDto.setCreateDate(taskManager.getCreateDate());
+            taskManagerDto.setUpdateDate(taskManager.getUpdatedDate());
+            taskManagerDto.setIsDeleted(taskManager.getIsDeleted());
+            taskManagerDto.setRoomDto(this.convertRoomEntityToRoomDto(taskManager.getRoom()));
+        }
+        return taskManagerDto;
+    }
+
+    @Override
+    public TaskManagerDto convertTaskManagerRequestToTaskManagerDto(TaskManagerDto taskManagerDto, TaskManagerRequest taskManagerRequest) {
+        if(taskManagerRequest != null)
+        {
+            if(taskManagerRequest.getTaskManagerTitle() != null)
+                taskManagerDto.setTaskManagerTitle(taskManagerRequest.getTaskManagerTitle());
+        }
+        return taskManagerDto;
+    }
+
+    @Override
+    public TaskManager convertTaskManagerDtoToTaskManagerEntity(TaskManager taskManager, TaskManagerDto taskManagerDto) {
+        if(taskManagerDto != null)
+        {
+            if(taskManagerDto.getTaskManagerId() != null)
+                taskManager.setTaskManagerId(UUID.fromString(taskManagerDto.getTaskManagerId()));
+            taskManager.setTaskManagerTitle(taskManagerDto.getTaskManagerTitle());
+            taskManager.setCreateDate(taskManagerDto.getCreateDate());
+            taskManager.setUpdatedDate(taskManagerDto.getUpdateDate());
+            taskManager.setIsDeleted(taskManagerDto.getIsDeleted());
+            taskManager.setRoom(this.convertRoomDtoToRoomEntity(new Room(), taskManagerDto.getRoomDto()));
+        }
+        return taskManager;
+    }
+    @Override
+    public User convertUserDtoToUserEntity(User user, UserDto userDto) {
+        if(userDto != null)
+        {
+            user.setUserId(userDto.getUserId());
+            user.setRole(userDto.getRole());
+            user.setEmail(userDto.getEmail());
+            user.setPassword(userDto.getPassword());
+            user.setFirstName(userDto.getFirstName());
+            user.setLastName(userDto.getLastName());
+            user.setUrlAvatar(userDto.getUrlAvatar());
+            user.setUpdatedDate(userDto.getDateModified());
+            user.setCreateDate(userDto.getDateCreated());
+        }
+        return user;
+    }
+    @Override
+    public Theme convertThemeDtoToThemeEntity(Theme theme, ThemeDto themeDto) {
+        if(themeDto != null)
+        {
+            if(themeDto.getThemeId() != null)
+                theme.setThemeId(UUID.fromString(themeDto.getThemeId()));
+            theme.setThemeName(themeDto.getThemeName());
+        }
+        return theme;
+    }
+    @Override
+    public Background convertBackgroundDtoToBackGroundEntity(Background background, BackgroundDto backgroundDto) {
+        if(backgroundDto != null)
+        {
+            if(backgroundDto.getBackgroundId() != null)
+                background.setBackgroundId(UUID.fromString(backgroundDto.getBackgroundId()));
+            background.setIsDeleted(false);
+            background.setCreateDate(new Date());
+            background.setUpdatedDate(new Date());
+            background.setLink(backgroundDto.getBackgroundLink());
+            background.setTheme(this.convertThemeDtoToThemeEntity(new Theme(), backgroundDto.getThemeDto()));
+        }
+        return background;
+    }
+
+    @Override
+    public MotivationalQuote convertMotivationalQuoteDtoToMotivationalQuoteEntity(MotivationalQuote motivationalQuote, MotivationalQuoteDto motivationalQuoteDto) {
+        if(motivationalQuoteDto != null)
+        {
+            if(motivationalQuoteDto.getMotivationalQuoteId() != null)
+                motivationalQuote.setMotivationalQuoteId(UUID.fromString(motivationalQuoteDto.getMotivationalQuoteId()));
+            motivationalQuote.setAuthor(motivationalQuote.getAuthor());
+            motivationalQuote.setContent(motivationalQuoteDto.getContent());
+        }
+        return motivationalQuote;
+    }
+
+    @Override
+    public TaskDto convertTaskEntityToTaskDto(Task task) {
+        TaskDto taskDto = null;
+        if(task != null)
+        {
+            taskDto = new TaskDto();
+            taskDto.setTaskDtoId(task.getTaskId().toString());
+            taskDto.setTaskContent(task.getTaskContent());
+            taskDto.setTaskIntend(task.getTaskIntend());
+            taskDto.setTaskStartDate(task.getTaskStartDate());
+            taskDto.setTaskStartTime(task.getTaskStartTime());
+            taskDto.setIsDone(task.getIsDone());
+            taskDto.setCreateDate(task.getCreateDate());
+            taskDto.setUpdateDate(task.getUpdatedDate());
+            taskDto.setIsDeleted(task.getIsDeleted());
+            taskDto.setTaskManagerDto(this.convertTaskManagerEntityToTaskManagerDto(task.getTaskManager()));
+        }
+        return taskDto;
+    }
+
+    @Override
+    public TimerDto convertTimerRequestToTimerDto(TimerDto timerDto, TimerRequest timerRequest) {
+        if(timerRequest != null)
+        {
+            if(timerRequest.getLongBreak() != null)
+                timerDto.setLongBreak(timerRequest.getLongBreak());
+            if(timerRequest.getPomodoroTime() != null)
+                timerDto.setPomodoroTime(timerRequest.getPomodoroTime());
+            if(timerRequest.getShortBreak() != null)
+                timerDto.setShortBreak(timerRequest.getShortBreak());
+        }
+        return timerDto;
+    }
+
+    @Override
+    public TaskManagerResponse convertTaskManagerDtoTotaskManagerResponse(TaskManagerDto taskManagerDto) {
+        TaskManagerResponse taskManagerResponse = null;
+        if(taskManagerDto != null)
+        {
+            taskManagerResponse = new TaskManagerResponse();
+            taskManagerResponse.setTaskManagerId(taskManagerDto.getTaskManagerId());
+            taskManagerResponse.setTaskManagerTitle(taskManagerDto.getTaskManagerTitle());
+            taskManagerResponse.setRoomId(taskManagerDto.getRoomDto().getRoomId());
+            taskManagerResponse.setUpdateDate(taskManagerDto.getUpdateDate());
+            taskManagerResponse.setCreateDate(taskManagerDto.getCreateDate());
+            taskManagerResponse.setIsDeleted(taskManagerDto.getIsDeleted());
+        }
+        return taskManagerResponse;
+    }
+
+    @Override
+    public LabelDto convertLabelRequestToLabelDto(LabelDto labelDto, LabelRequest labelRequest) {
+        if(labelRequest != null)
+        {
+            if(labelRequest.getColor() != null)
+                labelDto.setColor(labelRequest.getColor());
+            if(labelRequest.getName() != null)
+                labelDto.setLabelName(labelRequest.getName());
+        }
+        return labelDto;
+    }
+
+    @Override
+    public LabelResponse convertLabelDtoToLabelResponse(LabelDto labelDto) {
+        LabelResponse labelResponse = null;
+        if(labelDto != null)
+        {
+            labelResponse = new LabelResponse();
+            labelResponse.setLabelId(labelDto.getLabelDtoId());
+            labelResponse.setName(labelDto.getLabelName());
+            labelResponse.setColor(labelDto.getColor());
+            labelResponse.setIsDeleted(labelDto.getIsDeleted());
+            labelResponse.setCreateDate(labelDto.getCreateDate());
+            labelResponse.setUpdateDate(labelDto.getUpdateDate());
+            labelResponse.setRoomId(labelDto.getRoomDto().getRoomId());
+        }
+        return labelResponse;
+    }
+
+
+    @Override
+    public Room convertRoomDtoToRoomEntity(Room room, RoomDto roomDto) {
+        if(roomDto != null)
+        {
+            if(roomDto.getRoomId() != null)
+                room.setRoomId(UUID.fromString(roomDto.getRoomId()));
+            room.setUser(this.convertUserDtoToUserEntity(new User(), roomDto.getUserDto()));
+            room.setTimer(this.convertTimerDtoToTimerEntity(new Timer(), roomDto.getTimerDto()));
+            room.setBackground(this.convertBackgroundDtoToBackGroundEntity(new Background(), roomDto.getBackgroundDto()));
+            room.setMotivationalQuote(this.convertMotivationalQuoteDtoToMotivationalQuoteEntity(new MotivationalQuote(), roomDto.getMotivationalQuoteDto()));
+            room.setCreateDate(roomDto.getCreateDate());
+            room.setUpdatedDate(roomDto.getUpdateDate());
+            room.setIsDeleted(roomDto.getIsDeleted());
+        }
+        return room;
     }
 }

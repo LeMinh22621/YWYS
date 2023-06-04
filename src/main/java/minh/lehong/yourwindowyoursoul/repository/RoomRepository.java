@@ -12,8 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface RoomRepository  extends JpaRepository<Room, UUID> {
-    Optional<Room> findRoomByRoomId(UUID roomId);
+    Optional<Room> findRoomByRoomIdAndIsDeleted(UUID roomId, boolean isDeleted);
 
     @Query("SELECT r.roomId FROM Room r WHERE r.user.userId = ?1")
-    Collection<UUID> findRoomIdBy(UUID userId);
+    Collection<UUID> findRoomIdByUserId(UUID userId);
 }

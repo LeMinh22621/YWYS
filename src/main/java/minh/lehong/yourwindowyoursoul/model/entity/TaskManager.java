@@ -10,31 +10,32 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "background")
+@Table(name = "task_manager")
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Background extends EntityCommon implements Serializable {
+public class TaskManager extends EntityCommon implements Serializable {
     @Id
-    @Column(name = "background_id")
+    @Column(name = "task_manager_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID backgroundId;
-    @Column(name = "link")
-    private String link;
+    private UUID taskManagerId;
+
+    @Column(name = "task_manager_title")
+    private String taskManagerTitle;
+
+    @OneToMany(mappedBy = "taskManager", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Collection<Task> tasks;
 
     @ManyToOne
-    @JoinColumn(name = "theme_id")
+    @JoinColumn(name = "room_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Theme theme;
-
-    @OneToMany(mappedBy = "background", fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Collection<Room> rooms;
+    private Room room;
 }

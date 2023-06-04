@@ -4,6 +4,7 @@ public class Constant {
     public static final String SORT_ASC = "asc";
     public static final String SORT_DESC = "desc";
 
+    public static final String SUCCESS = "Success";
     public static final String CREATE_DATE = "createDate";
 
     public static final String SORT_DEFAULT = "createDate:desc";

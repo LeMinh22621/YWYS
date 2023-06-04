@@ -1,6 +1,7 @@
 package minh.lehong.yourwindowyoursoul.service;
 
 import minh.lehong.yourwindowyoursoul.dto.TimerDto;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.TimerRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
 import org.springframework.security.config.web.servlet.oauth2.resourceserver.OpaqueTokenDsl;
@@ -14,5 +15,5 @@ public interface TimerService {
 
     Timer save(Timer timer);
 
-    Response updateTimer(String roomId, TimerDto timerDto) throws ParseException;
+    Response updateTimer(String roomId, TimerRequest timerRequest) throws ParseException;
 }

@@ -8,30 +8,30 @@ import org.springframework.web.context.annotation.RequestScope;
 @Component
 @RequestScope
 @NoArgsConstructor
-public class DBException extends RuntimeException {
+	public class DBException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public DBException(String messsage) {
+	public DBException(String message) {
 		super();
-		this.messsage = messsage;
+		this.message = message;
 	}
 
-	public DBException(String messsage, HttpStatus status) {
+	public DBException(String message, HttpStatus status) {
 		super();
-		this.messsage = messsage;
+		this.message = message;
 		this.status = status;
 	}
 
-	private String messsage;
+	private String message;
 
 	private HttpStatus status = HttpStatus.BAD_REQUEST;
 
-	public String getMesssage() {
-		return messsage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMesssage(String messsage) {
-		this.messsage = messsage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public HttpStatus getStatus() {

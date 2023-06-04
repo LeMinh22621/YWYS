@@ -55,7 +55,6 @@ public class BackgroundServiceImpl implements BackgroundService {
 
         response.setData(backgroundDtos);
         response.setMessage("Get List Background based on themeId is ok!");
-        response.setTitle(HttpStatus.OK.name());
         response.setStatus(true);
         response.setReturnCode(HttpStatus.OK.value());
 

@@ -5,12 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class TaskLevelDto {
-    @JsonProperty("task_level_id")
-    private String taskLevelDtoId;
-    @JsonProperty("task_level_name")
-    private String taskLevelName;
+public class TaskLabelDto {
+    @JsonProperty("task_label_id")
+    private String taskLabelDtoId;
+
+    @JsonProperty("task")
+    private TaskDto taskDto;
+
+    @JsonProperty("label")
+    private LabelDto labelDto;
 }

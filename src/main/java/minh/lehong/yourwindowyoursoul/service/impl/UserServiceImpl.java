@@ -118,7 +118,6 @@ public class UserServiceImpl implements UserService {
         response.setData(userDetails);
         response.setStatus(jwtService.isTokenValid(token, userDetails));
         response.setReturnCode(HttpStatus.OK.value());
-        response.setTitle(HttpStatus.OK.name());
         response.setMessage("Check Expired Token Success");
 
         return response;

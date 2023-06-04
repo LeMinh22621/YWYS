@@ -17,9 +17,6 @@ public class Response implements Serializable {
     @JsonProperty("message")
     private String message;
 
-    @JsonProperty("title")
-    private String title;
-
     @JsonProperty("return_code")
     private int returnCode;
 
@@ -27,7 +24,7 @@ public class Response implements Serializable {
         super();
     }
 
-    public Response(final Serializable data, final boolean status, final String message, final int returnCode) {
+    public Response(final Object data, final boolean status, final String message, final int returnCode) {
         super();
         this.data = data;
         this.status = status;

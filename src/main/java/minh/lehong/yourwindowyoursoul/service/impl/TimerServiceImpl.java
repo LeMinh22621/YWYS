@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.service.impl;
 
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.TimerDto;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.TimerRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.Room;
@@ -40,19 +41,21 @@ public class TimerServiceImpl implements TimerService {
     }
 
     @Override
-    public Response updateTimer(String roomId, TimerDto timerDto) throws ParseException {
-        Response response = null;
-        Timer timer = commonConverter.convertTimerDtoToTimerEntity(roomId, timerDto);
-        timer.setUpdatedDate(commonConverter.convertToG7(new Date()));
-
-        if(timerRepository.save(timer) != null)
+    public Response updateTimer(String timerId, TimerRequest timerRequest) throws ParseException {
+        Response response;
+        Timer timer = timerRepository.findById(UUID.fromString(timerId)).orElseThrow(() -> new DBException("find timer Id error"));
+        TimerDto timerDto = commonConverter.convertTimerEntityToTimerDto(timer);
+        timerDto = commonConverter.convertTimerRequestToTimerDto(timerDto, timerRequest);
+        timerDto.setUpdateDate(commonConverter.convertToG7(new Date()));
+        timer = commonConverter.convertTimerDtoToTimerEntity(timer, timerDto);
+        try {
+            timer = timerRepository.save(timer);
+            response = new Response(commonConverter.convertTimerEntityToTimerDto(timer),
+                    true, "Update Timer Success!", HttpStatus.OK.value());
+        }
+        catch (Exception e)
         {
-            response = new Response();
-            response.setData(commonConverter.convertTimerEntityToTimerDto(timer));
-            response.setStatus(true);
-            response.setTitle(HttpStatus.OK.name());
-            response.setMessage("Update timer Success!");
-            response.setReturnCode(HttpStatus.OK.value());
+            response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
     }

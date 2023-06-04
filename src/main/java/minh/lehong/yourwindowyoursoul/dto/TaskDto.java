@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import minh.lehong.yourwindowyoursoul.model.entity.Room;
-import minh.lehong.yourwindowyoursoul.model.entity.TaskLevel;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 @Data
@@ -15,7 +14,6 @@ import java.util.Date;
 public class TaskDto {
     @JsonProperty("task_id")
     private String taskDtoId;
-
     @JsonProperty("task_content")
     private String taskContent;
     @JsonProperty("is_deleted")
@@ -28,10 +26,10 @@ public class TaskDto {
     private Date updateDate;
     @JsonProperty("task_intend")
     private Long taskIntend;
-    @JsonProperty("task_priority")
-    private Long taskPriority;
-    @JsonProperty("room")
-    private Room room;
-    @JsonProperty("task_level")
-    private TaskLevel taskLevel;
+    @JsonProperty("task_start_date")
+    private Date taskStartDate;
+    @JsonProperty("task_start_time")
+    private Long taskStartTime;
+    @JsonProperty("task_manager")
+    private TaskManagerDto taskManagerDto;
 }

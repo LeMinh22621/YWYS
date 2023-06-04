@@ -58,7 +58,6 @@ public class RoomServiceImpl implements RoomService {
             response.setData(this.commonConverter.convertRoomEntityToRoomDto(room));
             response.setStatus(true);
             response.setReturnCode(HttpStatus.OK.value());
-            response.setTitle(HttpStatus.OK.name());
             response.setMessage(String.format("Get Room By %s Success!", roomId));
         }
         return response;
@@ -66,8 +65,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room findRoomById(UUID roomId) {
-        return roomRepository.findById(roomId)
-                .orElseThrow(() -> new DBException("GET Room by RoomId error!"));
+        return roomRepository.findRoomByRoomIdAndIsDeleted(roomId, false)
+                .orElseThrow(() -> new DBException("GET Room by roomId error!"));
     }
 
     @Override
@@ -87,7 +86,6 @@ public class RoomServiceImpl implements RoomService {
         {
             response = new Response();
             response.setData(commonConverter.convertRoomEntityToRoomDto(room));
-            response.setTitle(HttpStatus.CREATED.name());
             response.setStatus(true);
             response.setReturnCode(HttpStatus.CREATED.value());
             response.setMessage(HttpStatus.CREATED.name());
@@ -101,7 +99,7 @@ public class RoomServiceImpl implements RoomService {
         String email = jwtService.extractUsername(authHeader.substring(7));
         User user = userService.findByEmail(email);
 
-        Collection<UUID> roomIds = roomRepository.findRoomIdBy(user.getUserId());
+        Collection<UUID> roomIds = roomRepository.findRoomIdByUserId(user.getUserId());
 
         if(roomIds != null)
         {
@@ -109,7 +107,6 @@ public class RoomServiceImpl implements RoomService {
             response.setData(roomIds);
             response.setReturnCode(HttpStatus.OK.value());
             response.setMessage("Get my rooms success!");
-            response.setTitle(HttpStatus.OK.name());
             response.setStatus(true);
         }
         return response;
@@ -121,7 +118,6 @@ public class RoomServiceImpl implements RoomService {
 
         response.setData(commonConverter.convertMotivationalQuoteEntityToMotivationalQuoteDto(motivationalQuoteService.getFirstMotivationalQuote()));
         response.setStatus(true);
-        response.setTitle(HttpStatus.OK.name());
         response.setReturnCode(HttpStatus.OK.value());
         response.setMessage("shuffle Motivational Quote success!");
 
@@ -149,12 +145,9 @@ public class RoomServiceImpl implements RoomService {
 
             response.setData(commonConverter.convertBackgroundEntityToBackgroundDto(background));
             response.setStatus(true);
-            response.setTitle(HttpStatus.OK.name());
             response.setReturnCode(HttpStatus.OK.value());
             response.setMessage("Shuffle Background By Theme Id Success!");
         }
-
-
         return response;
     }
 }

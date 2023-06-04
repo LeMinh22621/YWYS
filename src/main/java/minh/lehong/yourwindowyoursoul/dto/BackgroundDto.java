@@ -15,4 +15,5 @@ public class BackgroundDto {
     private String backgroundLink;
     @JsonProperty("theme")
     private ThemeDto themeDto;
+
 }

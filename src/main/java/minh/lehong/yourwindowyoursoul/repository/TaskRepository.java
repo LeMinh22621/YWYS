@@ -11,4 +11,6 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> {
     Task save(Task task);
+
+    Optional<Task> findByTaskIdAndIsDeleted(UUID taskId, boolean isDeleted);
 }

@@ -10,24 +10,33 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "task_level")
+@Table(name = "label")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class TaskLevel implements Serializable {
+public class Label extends EntityCommon implements Serializable {
     @Id
-    @Column(name = "task_level_id")
+    @Column(name = "label_id")
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "uuid-char")
-    private UUID taskLevelId;
+    private UUID labelId;
 
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "taskLevel", fetch = FetchType.LAZY)
+    @Column
+    private String color;
+
+    @OneToMany(mappedBy = "label", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Collection<Task> tasks;
+    private Collection<TaskLabel> taskLabels;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Room room;
 }

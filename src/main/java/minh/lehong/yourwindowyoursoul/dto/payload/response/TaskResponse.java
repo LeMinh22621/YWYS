@@ -2,8 +2,8 @@ package minh.lehong.yourwindowyoursoul.dto.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import minh.lehong.yourwindowyoursoul.dto.TaskLevelDto;
-import minh.lehong.yourwindowyoursoul.model.entity.TaskLevel;
+import minh.lehong.yourwindowyoursoul.dto.LabelDto;
+import minh.lehong.yourwindowyoursoul.model.entity.TaskManager;
 
 import java.util.Date;
 
@@ -17,16 +17,12 @@ public class TaskResponse {
 
     @JsonProperty("task_intend")
     private Long taskIntend;
-
-    @JsonProperty("task_priority")
-    private Long taskPriority;
-
-    @JsonProperty("room_id")
-    private String roomId;
-
-    @JsonProperty("task_level")
-    private TaskLevelDto taskLevelDto;
-
+    @JsonProperty("task_start_date")
+    private Date taskStartDate;
+    @JsonProperty("task_start_time")
+    private Long taskStartTime;
+    @JsonProperty("task_manager_id")
+    private String taskManagerId;
     @JsonProperty("is_done")
     private Boolean isDone;
 

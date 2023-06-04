@@ -1,23 +1,19 @@
 package minh.lehong.yourwindowyoursoul.converter;
 
 import minh.lehong.yourwindowyoursoul.dto.*;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.TaskResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.*;
 import minh.lehong.yourwindowyoursoul.model.entity.*;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.SignupRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.response.UserResponse;
 
 import java.text.ParseException;
 import java.util.Date;
 
 public interface CommonConverter {
-    public UserResponse convertUserEntityToUserData(final User user) throws ParseException;
+    public UserResponse convertUserEntityToUserRespond(final User user) throws ParseException;
 
-    User convertUserRequestToUserEntity(final UserRequest userRequest);
+//    User convertUserRequestToUserEntity(final UserRequest userRequest);
 
-    User convertSignupRequestToUserEntity(final SignupRequest signupRequest);
+//    User convertSignupRequestToUserEntity(final SignupRequest signupRequest);
 
     Response convertToResponse(final Object data, final int returnCode, final String message, String... title);
 
@@ -27,6 +23,7 @@ public interface CommonConverter {
 
     User convertOldUserToNewUser(User oldUser, User newUser);
 
+    Label convertLabelDtoToLabelEntity(Label label, LabelDto labelDto);
     RoomDto convertRoomEntityToRoomDto(Room roomEntity);
     BackgroundDto convertBackgroundEntityToBackgroundDto(Background backgroundEntity);
     MotivationalQuoteDto convertMotivationalQuoteEntityToMotivationalQuoteDto(MotivationalQuote motivationalQuoteEntity);
@@ -34,11 +31,39 @@ public interface CommonConverter {
     TimerDto convertTimerEntityToTimerDto(Timer timerEntity);
     UserDto convertUserEntityToUserDto(User userEntity);
 
-    Task convertTaskDtoToTaskEntity(TaskDto taskDto);
+    Task convertTaskDtoToTaskEntity(Task task, TaskDto taskDto);
 
-    void convertTaskRequestToTaskDto(TaskRequest taskRequest, TaskDto taskDto) throws ParseException;
+    TaskDto convertTaskRequestToTaskDto(TaskDto taskDto, TaskRequest taskRequest) throws ParseException;
 
     TaskResponse convertTaskDtoToTaskResponse(TaskDto taskDto);
 
-    Timer convertTimerDtoToTimerEntity(String roomId, TimerDto timerDto);
+    Timer convertTimerDtoToTimerEntity(Timer Timer, TimerDto timerDto);
+
+    LabelDto convertLabelEntityToLabelDto(Label label);
+
+    TaskManagerDto convertTaskManagerEntityToTaskManagerDto(TaskManager taskManager);
+
+    TaskManagerDto convertTaskManagerRequestToTaskManagerDto(TaskManagerDto taskManagerDto, TaskManagerRequest taskManagerRequest);
+
+    TaskManager convertTaskManagerDtoToTaskManagerEntity(TaskManager taskManager, TaskManagerDto taskManagerDto);
+
+    Room convertRoomDtoToRoomEntity(Room room, RoomDto roomDto);
+
+    User convertUserDtoToUserEntity(User user, UserDto userDto);
+
+    Theme convertThemeDtoToThemeEntity(Theme theme, ThemeDto themeDto);
+
+    Background convertBackgroundDtoToBackGroundEntity(Background background, BackgroundDto backgroundDto);
+
+    MotivationalQuote convertMotivationalQuoteDtoToMotivationalQuoteEntity(MotivationalQuote motivationalQuote, MotivationalQuoteDto motivationalQuoteDto);
+
+    TaskDto convertTaskEntityToTaskDto(Task task);
+
+    TimerDto convertTimerRequestToTimerDto(TimerDto timerDto, TimerRequest timerRequest);
+
+    TaskManagerResponse convertTaskManagerDtoTotaskManagerResponse(TaskManagerDto taskManagerDto);
+
+    LabelDto convertLabelRequestToLabelDto(LabelDto labelDto, LabelRequest labelRequest);
+
+    LabelResponse convertLabelDtoToLabelResponse(LabelDto labelDto);
 }

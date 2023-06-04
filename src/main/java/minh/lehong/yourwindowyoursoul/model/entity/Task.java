@@ -7,7 +7,8 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -29,8 +30,11 @@ public class Task extends EntityCommon implements Serializable {
     @Column(name = "task_content")
     private String taskContent;
 
-    @Column(name = "task_priority")
-    private Integer taskPriority;
+    @Column(name = "task_start_date")
+    private Date taskStartDate;
+
+    @Column(name = "task_start_time")
+    private Long taskStartTime;
 
     @Column(name = "task_intend")
     private Long taskIntend;
@@ -38,15 +42,14 @@ public class Task extends EntityCommon implements Serializable {
     @Column(name = "is_done")
     private Boolean isDone;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_level_id")
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private TaskLevel taskLevel;
+    private Collection<TaskLabel> taskLabels;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @ManyToOne
+    @JoinColumn(name = "task_manager_id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Room room;
+    private TaskManager taskManager;
 }
