@@ -30,6 +30,8 @@ public class Theme implements Serializable
 
     @Column(name = "theme_name")
     private String themeName;
+    @Column(name = "image_link")
+    private String imageLink;
 
     @OneToMany(mappedBy = "theme", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude

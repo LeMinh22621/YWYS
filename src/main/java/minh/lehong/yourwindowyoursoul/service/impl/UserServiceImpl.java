@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import lombok.var;
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
+import minh.lehong.yourwindowyoursoul.dto.UserDto;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
@@ -17,11 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
+import javax.swing.text.html.HTML;
 import java.text.ParseException;
 import java.util.UUID;
 
@@ -30,11 +34,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    CommonConverter commonConverter;
+    private CommonConverter commonConverter;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    PasswordEncoder passwordEncoder;
     @Autowired
     private  JwtService jwtService;
 
@@ -64,59 +67,72 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthenticationResponse register(SignupRequest request) throws DBException, Exception{
+    public Response register(SignupRequest request) throws DBException, Exception{
+        Response response;
         if(userRepository.findByEmail(request.getEmail()).isPresent())
         {
             throw new DBException("This email has register!", HttpStatus.CONFLICT);
         }
         else {
-            var user = User.builder()
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.USER)
-                    .build();
+            AuthenticationResponse authenticationResponse;
+            try
+            {
+                UserDto userDto = commonConverter.convertSignupRequestToUserDto(new UserDto(), request);
+                userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+                User user = commonConverter.convertUserDtoToUserEntity(new User(), userDto);
+                user = userRepository.save(user);
 
-            userRepository.save(user);
+                var jwtToken = jwtService.generateToken(user);
 
-            var jwtToken = jwtService.generateToken(user);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+                authenticationResponse = AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .user(commonConverter.convertUserDtoToUserResponse(commonConverter.convertUserEntityToUserDto(user)))
+                        .build();
+                response = new Response(authenticationResponse, true, "Register Success!", HttpStatus.OK.value());
+            }
+            catch (Exception e)
+            {
+                response = new Response(null, true, "Register Failed!", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
         }
+        return response;
     }
 
     @Override
-    public AuthenticationResponse login(LoginRequest request) throws UsernameNotFoundException, Exception
+    public Response login(LoginRequest request) throws Exception
     {
-        authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 ));
+        User user = (User) authentication.getPrincipal();
+        var jwtToken = jwtService.generateToken(user);
 
-        var user = userRepository.findByEmail(request.getEmail());
-        var jwtToken = jwtService.generateToken(user.get());
-
-        return AuthenticationResponse.builder()
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
                 .token(jwtToken)
+                .user(commonConverter.convertUserDtoToUserResponse(commonConverter.convertUserEntityToUserDto(user)))
                 .build();
+        return new Response(authenticationResponse, true, "Login Success!", HttpStatus.OK.value());
     }
 
     @Override
-    public AuthenticationResponse logout(String tokenHeader) throws ParseException, ExpiredJwtException, Exception {
+    public Response logout(String tokenHeader) throws ParseException, ExpiredJwtException, Exception {
         String newToken = jwtService.invalidToken(tokenHeader);
-        return AuthenticationResponse.builder().token(newToken).build();
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .token(newToken)
+                .user(null)
+                .build();
+        return new Response(authenticationResponse, true, "Logout Success!", HttpStatus.OK.value());
     }
 
     @Override
-    public Response checkExpiredToken(String token) {
-        UserDetails userDetails = userRepository.findByEmail(jwtService.extractUsername(token)).orElseThrow(() -> new DBException("not Found User by Email extracted from token"));
+    public Response checkExpiredToken(String token) throws ParseException {
+        User user = userRepository.findByEmail(jwtService.extractUsername(token)).orElseThrow(() -> new DBException("not Found User by Email extracted from token"));
 
         Response response = new Response();
-        response.setData(userDetails);
-        response.setStatus(jwtService.isTokenValid(token, userDetails));
+        response.setData(commonConverter.convertUserDtoToUserResponse(commonConverter.convertUserEntityToUserDto(user)));
+        response.setStatus(jwtService.isTokenValid(token, user));
         response.setReturnCode(HttpStatus.OK.value());
         response.setMessage("Check Expired Token Success");
 

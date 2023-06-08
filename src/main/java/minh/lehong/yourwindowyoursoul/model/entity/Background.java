@@ -26,7 +26,8 @@ public class Background extends EntityCommon implements Serializable {
     private UUID backgroundId;
     @Column(name = "link")
     private String link;
-
+    @Column(name = "image_link")
+    private String imageLink;
     @ManyToOne
     @JoinColumn(name = "theme_id")
     @EqualsAndHashCode.Exclude

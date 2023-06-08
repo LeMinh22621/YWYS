@@ -29,11 +29,8 @@ public class UserResponse implements Serializable {
     @JsonProperty("date_modified")
     private Date dateModified;
 
-    @JsonIgnore
-    private String password;
-
-    @JsonProperty("is_disabled")
-    private boolean isDisabled;
+    @JsonProperty("is_deleted")
+    private boolean isDeleted;
 
     @JsonProperty("url_avatar")
     private String urlAvatar;

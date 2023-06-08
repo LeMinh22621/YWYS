@@ -40,6 +40,9 @@ public class UserDto {
     @JsonProperty("date_modified")
     private Date dateModified;
 
+    @JsonProperty("is_deleted")
+    private boolean isDeleted;
+
     @JsonProperty("role")
     @Enumerated(EnumType.STRING)
     private Role role;

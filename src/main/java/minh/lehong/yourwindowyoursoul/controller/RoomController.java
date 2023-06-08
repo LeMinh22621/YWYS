@@ -1,10 +1,7 @@
 package minh.lehong.yourwindowyoursoul.controller;
 
 import minh.lehong.yourwindowyoursoul.dto.TimerDto;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.LabelRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskManagerRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.TaskRequest;
-import minh.lehong.yourwindowyoursoul.dto.payload.request.TimerRequest;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.model.entity.Background;
 import minh.lehong.yourwindowyoursoul.model.entity.Room;
@@ -19,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/room")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
 public class RoomController {
     @Autowired
     private BackgroundService backgroundService;
@@ -64,9 +61,25 @@ public class RoomController {
         Response response = backgroundService.getBackgroundListByThemeId(themeId);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/background")
+    public ResponseEntity<?> getBackgroundById(@RequestParam("background_id") String backgroundId){
+        Response response = backgroundService.getBackgroundByBackgroundId(backgroundId);
+        return ResponseEntity.ok(response);
+    }
     /***
      * Room
      */
+    @PostMapping("/create-room")
+    public ResponseEntity<?> createRoom(@RequestHeader("Authorization") String authHeader, @RequestBody RoomRequest roomRequest) throws ParseException {
+        Response response = roomService.createRoom(authHeader, roomRequest);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("{userId}/my-rooms")
+    public ResponseEntity<?> getMyRoomList(@PathVariable("userId") String userId)
+    {
+        Response response = roomService.getMyRoomListByUserId(userId);
+        return ResponseEntity.ok(response);
+    }
     @GetMapping()
     public ResponseEntity<?> getRoom(@RequestParam("room_id") String roomId){
         Response response = roomService.getRoomFromRoomId(roomId);

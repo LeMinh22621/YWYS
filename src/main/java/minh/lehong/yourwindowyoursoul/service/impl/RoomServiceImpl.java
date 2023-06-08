@@ -2,7 +2,11 @@ package minh.lehong.yourwindowyoursoul.service.impl;
 
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.converter.impl.CommonConverterImpl;
+import minh.lehong.yourwindowyoursoul.dto.RoomDto;
+import minh.lehong.yourwindowyoursoul.dto.payload.request.RoomRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.RoomItemResponse;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.RoomResponse;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.*;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.jws.Oneway;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,7 +75,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Response createRoom(String authHeader) {
+    public Response createRoom(String authHeader, RoomRequest roomRequest) throws ParseException {
         Response response = null;
 
         String email = jwtService.extractUsername(authHeader.substring(7));
@@ -81,6 +86,12 @@ public class RoomServiceImpl implements RoomService {
         Timer timer = new Timer();
 
         Room room = new Room(user, background, motivationalQuote, timer);
+        RoomDto roomDto = commonConverter.convertRoomRequestToRoomDto(roomRequest);
+        roomDto.setIsDeleted(false);
+        roomDto.setCreateDate(commonConverter.convertToG7(new Date()));
+        roomDto.setUpdateDate(commonConverter.convertToG7(new Date()));
+
+        room = commonConverter.convertRoomDtoToRoomEntity(room, roomDto);
 
         if((room = this.saveRoom(room)) != null)
         {
@@ -147,6 +158,35 @@ public class RoomServiceImpl implements RoomService {
             response.setStatus(true);
             response.setReturnCode(HttpStatus.OK.value());
             response.setMessage("Shuffle Background By Theme Id Success!");
+        }
+        return response;
+    }
+
+    @Override
+    public Response getMyRoomListByUserId(String userId) {
+        Response response;
+        try{
+            User user = userService.findByUserId(UUID.fromString(userId));
+            if(user != null) {
+                List<Room> roomList = roomRepository.findRoomsByUserAndIsDeleted(user, false);
+                if(roomList == null || roomList.isEmpty())
+                    response = new Response(null, false, "Have No Any Room!", HttpStatus.NO_CONTENT.value());
+                else
+                {
+                    List<RoomItemResponse> roomResponseList = roomList.stream().map(room ->
+                            commonConverter.convertRoomDtoToRoomItemResponse(commonConverter.convertRoomEntityToRoomDto(room))
+                    ).collect(Collectors.toList());
+                    response = new Response(roomResponseList, true, "GET My Room List Success!", HttpStatus.OK.value());
+                }
+
+            }
+            else {
+                response =  new Response(null, false, "Have No User!", HttpStatus.BAD_REQUEST.value());
+            }
+        }
+        catch (Exception e)
+        {
+            response = new Response(null, false, "GET My Room List Failed!", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
     }

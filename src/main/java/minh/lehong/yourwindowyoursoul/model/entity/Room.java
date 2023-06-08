@@ -35,6 +35,15 @@ public class Room extends EntityCommon implements Serializable {
     @Type(type = "uuid-char")
     private UUID roomId;
 
+    @Column(name = "title")
+    private String title;
+    @Column(name = "description")
+    @Lob
+    private String description;
+    @Column(name = "members")
+    private int members;
+    @Column(name = "is_public")
+    private Boolean isPublic;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude

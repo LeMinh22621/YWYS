@@ -17,11 +17,11 @@ public interface UserService extends UserDetailsService {
     User save(User user);
     boolean existsUserByEmail(String email);
 
-    AuthenticationResponse register(SignupRequest request) throws Exception;
+    Response register(SignupRequest request) throws Exception;
 
-    AuthenticationResponse login(LoginRequest request) throws Exception;
+    Response login(LoginRequest request) throws Exception;
 
-    AuthenticationResponse logout(String tokenHeader) throws ParseException, Exception;
+    Response logout(String tokenHeader) throws ParseException, Exception;
 
-    Response checkExpiredToken(String token);
+    Response checkExpiredToken(String token) throws ParseException;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,4 +17,6 @@ public interface RoomRepository  extends JpaRepository<Room, UUID> {
 
     @Query("SELECT r.roomId FROM Room r WHERE r.user.userId = ?1")
     Collection<UUID> findRoomIdByUserId(UUID userId);
+
+    List<Room> findRoomsByUserAndIsDeleted(User user, boolean isDeleted);
 }

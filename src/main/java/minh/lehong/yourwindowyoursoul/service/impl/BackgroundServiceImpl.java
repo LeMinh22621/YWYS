@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.service.impl;
 
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.BackgroundDto;
+import minh.lehong.yourwindowyoursoul.dto.payload.response.BackgroundResponse;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.model.entity.Background;
@@ -34,9 +35,22 @@ public class BackgroundServiceImpl implements BackgroundService {
     private ThemeService themeService;
 
     @Override
-    public Background getBackgroundByBackgroundId(UUID uuid) {
-        return backgroundRepository.findById(uuid)
-                .orElseThrow(() -> new DBException("No BackgroundID found!"));
+    public Response getBackgroundByBackgroundId(String backgroundId) {
+        Response response;
+        try
+        {
+            Background background = backgroundRepository.findById(UUID.fromString(backgroundId))
+                    .orElseThrow(() -> new DBException("No BackgroundID found!"));
+            BackgroundResponse backgroundResponse = commonConverter.convertBackgroundDtoToBackGroundResponse(commonConverter.convertBackgroundEntityToBackgroundDto(background));
+
+            response = new Response(backgroundResponse, true, "GET Background By BackgroundId Success!", HttpStatus.OK.value());
+        }
+        catch (Exception e)
+        {
+            response = new Response(null, false, "GET Background Failed", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return response;
     }
 
     @Override

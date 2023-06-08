@@ -1,6 +1,7 @@
 package minh.lehong.yourwindowyoursoul.converter.impl;
 
 import minh.lehong.yourwindowyoursoul.constant.Constant;
+import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.dto.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
@@ -36,25 +37,20 @@ public class CommonConverterImpl implements CommonConverter {
     private RoomService roomService;
 
     @Override
-    public UserResponse convertUserEntityToUserRespond(final User user) throws ParseException {
+    public UserResponse convertUserEntityToUserResponse(final User user) throws ParseException {
         UserResponse userResponse = null;
         if(user != null){
-            // convert to right format
-            user.setCreateDate(this.convertToG7(user.getCreateDate()));
-            user.setUpdatedDate(this.convertToG7(user.getUpdatedDate()));
-
             // set user entity to user response
             userResponse = new UserResponse();
-
             userResponse.setId(user.getUserId());
             userResponse.setEmail(user.getEmail());
-            userResponse.setPassword(user.getPassword());
-            userResponse.setDisabled(!user.isEnabled());
             userResponse.setFirstName(user.getFirstName());
             userResponse.setLastName(user.getLastName());
             userResponse.setDateCreated(user.getCreateDate());
             userResponse.setUrlAvatar(user.getUrlAvatar());
-            userResponse.setDateModified(user.getUpdatedDate());
+            userResponse.setDeleted(user.getIsDeleted());
+            userResponse.setDateCreated(this.convertToG7(user.getCreateDate()));
+            userResponse.setDateModified(this.convertToG7(user.getUpdatedDate()));
         }
         return userResponse;
     }
@@ -131,6 +127,10 @@ public class CommonConverterImpl implements CommonConverter {
         {
             roomDto = new RoomDto();
             roomDto.setRoomId(roomEntity.getRoomId().toString());
+            roomDto.setTitle(roomEntity.getTitle());
+            roomDto.setDescription(roomEntity.getDescription());
+            roomDto.setMembers(roomEntity.getMembers());
+            roomDto.setIsPublic(roomEntity.getIsPublic());
             roomDto.setBackgroundDto(this.convertBackgroundEntityToBackgroundDto(roomEntity.getBackground()));
             roomDto.setTimerDto(this.convertTimerEntityToTimerDto(roomEntity.getTimer()));
             roomDto.setMotivationalQuoteDto(this.convertMotivationalQuoteEntityToMotivationalQuoteDto(roomEntity.getMotivationalQuote()));
@@ -150,6 +150,7 @@ public class CommonConverterImpl implements CommonConverter {
             backgroundDto = new BackgroundDto();
             backgroundDto.setThemeDto(this.convertThemeEntityToThemeDto(backgroundEntity.getTheme()));
             backgroundDto.setBackgroundLink(backgroundEntity.getLink());
+            backgroundDto.setImageLink(backgroundEntity.getImageLink());
             backgroundDto.setBackgroundId(backgroundEntity.getBackgroundId().toString());
         }
         return backgroundDto;
@@ -176,6 +177,7 @@ public class CommonConverterImpl implements CommonConverter {
             themeDto = new ThemeDto();
             themeDto.setThemeId(themeEntity.getThemeId().toString());
             themeDto.setThemeName(themeEntity.getThemeName());
+            themeDto.setImageLink(themeEntity.getImageLink());
         }
         return themeDto;
     }
@@ -370,7 +372,8 @@ public class CommonConverterImpl implements CommonConverter {
     public User convertUserDtoToUserEntity(User user, UserDto userDto) {
         if(userDto != null)
         {
-            user.setUserId(userDto.getUserId());
+            if(userDto.getUserId() != null)
+                user.setUserId(userDto.getUserId());
             user.setRole(userDto.getRole());
             user.setEmail(userDto.getEmail());
             user.setPassword(userDto.getPassword());
@@ -379,6 +382,7 @@ public class CommonConverterImpl implements CommonConverter {
             user.setUrlAvatar(userDto.getUrlAvatar());
             user.setUpdatedDate(userDto.getDateModified());
             user.setCreateDate(userDto.getDateCreated());
+            user.setIsDeleted(userDto.isDeleted());
         }
         return user;
     }
@@ -389,6 +393,7 @@ public class CommonConverterImpl implements CommonConverter {
             if(themeDto.getThemeId() != null)
                 theme.setThemeId(UUID.fromString(themeDto.getThemeId()));
             theme.setThemeName(themeDto.getThemeName());
+            theme.setImageLink(themeDto.getImageLink());
         }
         return theme;
     }
@@ -402,6 +407,7 @@ public class CommonConverterImpl implements CommonConverter {
             background.setCreateDate(new Date());
             background.setUpdatedDate(new Date());
             background.setLink(backgroundDto.getBackgroundLink());
+            background.setImageLink(backgroundDto.getImageLink());
             background.setTheme(this.convertThemeDtoToThemeEntity(new Theme(), backgroundDto.getThemeDto()));
         }
         return background;
@@ -498,6 +504,116 @@ public class CommonConverterImpl implements CommonConverter {
         return labelResponse;
     }
 
+    @Override
+    public UserDto convertSignupRequestToUserDto(UserDto userDto, SignupRequest request) throws ParseException {
+        if(request != null)
+        {
+            userDto.setEmail(request.getEmail());
+            userDto.setPassword(request.getPassword());
+            userDto.setRole(Role.USER);
+            userDto.setFirstName(request.getFirstName());
+            userDto.setLastName(request.getLastName());
+            userDto.setUrlAvatar("https://lhmfrontend.s3.amazonaws.com/default-avatar.jpg");
+            userDto.setDeleted(false);
+            userDto.setDateCreated(this.convertToG7(new Date()));
+            userDto.setDateModified(userDto.getDateCreated());
+            userDto.setDeleted(false);
+        }
+        return userDto;
+    }
+
+    @Override
+    public UserResponse convertUserDtoToUserResponse(UserDto userDto) throws ParseException {
+        UserResponse userResponse = null;
+        if(userDto != null){
+            userResponse = new UserResponse();
+
+            userResponse.setId(userDto.getUserId());
+            userResponse.setEmail(userDto.getEmail());
+            userResponse.setFirstName(userDto.getFirstName());
+            userResponse.setLastName(userDto.getLastName());
+            userResponse.setDateCreated(userDto.getDateCreated());
+            userResponse.setUrlAvatar(userDto.getUrlAvatar());
+            userResponse.setDeleted(userDto.isDeleted());
+            userResponse.setDateCreated(this.convertToG7(userDto.getDateCreated()));
+            userResponse.setDateModified(this.convertToG7(userDto.getDateModified()));
+        }
+        return userResponse;
+    }
+
+    @Override
+    public RoomResponse convertRoomDtoToRoomResponse(RoomDto roomDto) {
+        RoomResponse response = null;
+        if(roomDto != null)
+        {
+            response = new RoomResponse();
+            response.setRoomId(roomDto.getRoomId());
+            response.setMembers(roomDto.getMembers());
+            response.setDescription(roomDto.getDescription());
+            response.setIsPublic(roomDto.getIsPublic());
+            response.setTitle(roomDto.getTitle());
+            response.setBackgroundId(roomDto.getBackgroundDto().getBackgroundId());
+            response.setTimerId(roomDto.getTimerDto().getTimerId());
+            response.setUserId(roomDto.getUserDto().getUserId().toString());
+            response.setMotivationalQuoteId(roomDto.getMotivationalQuoteDto().getMotivationalQuoteId());
+            response.setUpdateDate(roomDto.getUpdateDate());
+            response.setCreateDate(roomDto.getCreateDate());
+            response.setIsDeleted(roomDto.getIsDeleted());
+        }
+        return response;
+    }
+
+    @Override
+    public BackgroundResponse convertBackgroundDtoToBackGroundResponse(BackgroundDto backgroundDto) {
+        BackgroundResponse backgroundResponse = null;
+
+        if(backgroundDto != null)
+        {
+            backgroundResponse = new BackgroundResponse();
+            backgroundResponse.setBackgroundId(backgroundDto.getBackgroundId());
+            backgroundResponse.setBackgroundLink(backgroundDto.getBackgroundLink());
+            backgroundResponse.setImageLink(backgroundDto.getImageLink());
+            backgroundResponse.setThemeId(backgroundDto.getThemeDto().getThemeId());
+        }
+
+        return backgroundResponse;
+    }
+
+    @Override
+    public RoomItemResponse convertRoomDtoToRoomItemResponse(RoomDto roomDto) {
+        RoomItemResponse response = null;
+        if(roomDto != null)
+        {
+            response = new RoomItemResponse();
+            response.setRoomId(roomDto.getRoomId());
+            response.setMembers(roomDto.getMembers());
+            response.setDescription(roomDto.getDescription());
+            response.setTitle(roomDto.getTitle());
+            response.setIsPublic(roomDto.getIsPublic());
+            response.setBackgroundResponse(this.convertBackgroundDtoToBackGroundResponse(roomDto.getBackgroundDto()));
+            response.setTimerId(roomDto.getTimerDto().getTimerId());
+            response.setUserId(roomDto.getUserDto().getUserId().toString());
+            response.setMotivationalQuoteId(roomDto.getMotivationalQuoteDto().getMotivationalQuoteId());
+            response.setUpdateDate(roomDto.getUpdateDate());
+            response.setCreateDate(roomDto.getCreateDate());
+            response.setIsDeleted(roomDto.getIsDeleted());
+        }
+        return response;
+    }
+
+    @Override
+    public RoomDto convertRoomRequestToRoomDto(RoomRequest roomRequest) throws ParseException {
+        RoomDto roomDto = null;
+        if(roomRequest != null)
+        {
+            roomDto = new RoomDto();
+            roomDto.setTitle(roomRequest.getTitle());
+            roomDto.setDescription(roomRequest.getDescription());
+            roomDto.setIsPublic(roomRequest.getIsPublic());
+        }
+        return roomDto;
+    }
+
 
     @Override
     public Room convertRoomDtoToRoomEntity(Room room, RoomDto roomDto) {
@@ -505,10 +621,18 @@ public class CommonConverterImpl implements CommonConverter {
         {
             if(roomDto.getRoomId() != null)
                 room.setRoomId(UUID.fromString(roomDto.getRoomId()));
-            room.setUser(this.convertUserDtoToUserEntity(new User(), roomDto.getUserDto()));
-            room.setTimer(this.convertTimerDtoToTimerEntity(new Timer(), roomDto.getTimerDto()));
-            room.setBackground(this.convertBackgroundDtoToBackGroundEntity(new Background(), roomDto.getBackgroundDto()));
-            room.setMotivationalQuote(this.convertMotivationalQuoteDtoToMotivationalQuoteEntity(new MotivationalQuote(), roomDto.getMotivationalQuoteDto()));
+            room.setTitle(roomDto.getTitle());
+            room.setDescription(roomDto.getDescription());
+            room.setMembers(roomDto.getMembers());
+            room.setIsPublic(roomDto.getIsPublic());
+            if(roomDto.getUserDto() != null)
+                room.setUser(this.convertUserDtoToUserEntity(new User(), roomDto.getUserDto()));
+            if(roomDto.getTimerDto() != null)
+                room.setTimer(this.convertTimerDtoToTimerEntity(new Timer(), roomDto.getTimerDto()));
+            if(roomDto.getBackgroundDto() != null)
+                room.setBackground(this.convertBackgroundDtoToBackGroundEntity(new Background(), roomDto.getBackgroundDto()));
+            if(roomDto.getMotivationalQuoteDto() != null)
+                room.setMotivationalQuote(this.convertMotivationalQuoteDtoToMotivationalQuoteEntity(new MotivationalQuote(), roomDto.getMotivationalQuoteDto()));
             room.setCreateDate(roomDto.getCreateDate());
             room.setUpdatedDate(roomDto.getUpdateDate());
             room.setIsDeleted(roomDto.getIsDeleted());

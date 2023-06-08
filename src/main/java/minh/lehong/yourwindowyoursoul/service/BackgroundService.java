@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BackgroundService {
-    Background getBackgroundByBackgroundId(UUID uuid);
+    Response getBackgroundByBackgroundId(String backgroundId);
 
     Background save(Background background);
 

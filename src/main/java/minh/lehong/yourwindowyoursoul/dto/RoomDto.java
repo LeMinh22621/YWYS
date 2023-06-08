@@ -9,6 +9,7 @@ import minh.lehong.yourwindowyoursoul.model.entity.Background;
 import minh.lehong.yourwindowyoursoul.model.entity.MotivationalQuote;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
 
+import javax.persistence.Column;
 import java.util.Date;
 
 @Data
@@ -17,6 +18,14 @@ import java.util.Date;
 public class RoomDto {
     @JsonProperty("room_id")
     private String roomId;
+    @JsonProperty("title")
+    private String title;
+    @JsonProperty("description")
+    private String description;
+    @JsonProperty("members")
+    private int members;
+    @JsonProperty("is_public")
+    private Boolean isPublic;
     @JsonProperty("background")
     private BackgroundDto backgroundDto;
     @JsonProperty("timer")

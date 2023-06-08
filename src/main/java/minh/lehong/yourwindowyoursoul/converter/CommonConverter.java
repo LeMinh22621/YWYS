@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 public interface CommonConverter {
-    public UserResponse convertUserEntityToUserRespond(final User user) throws ParseException;
+    public UserResponse convertUserEntityToUserResponse(final User user) throws ParseException;
 
 //    User convertUserRequestToUserEntity(final UserRequest userRequest);
 
@@ -66,4 +66,16 @@ public interface CommonConverter {
     LabelDto convertLabelRequestToLabelDto(LabelDto labelDto, LabelRequest labelRequest);
 
     LabelResponse convertLabelDtoToLabelResponse(LabelDto labelDto);
+
+    UserDto convertSignupRequestToUserDto(UserDto userDto, SignupRequest request) throws ParseException;
+
+    UserResponse convertUserDtoToUserResponse(UserDto convertUserEntityToUserDto) throws ParseException;
+
+    RoomResponse convertRoomDtoToRoomResponse(RoomDto roomDto);
+
+    BackgroundResponse convertBackgroundDtoToBackGroundResponse(BackgroundDto backgroundDto);
+
+    RoomItemResponse convertRoomDtoToRoomItemResponse(RoomDto roomDto);
+
+    RoomDto convertRoomRequestToRoomDto(RoomRequest roomRequest) throws ParseException;
 }
