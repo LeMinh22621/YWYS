@@ -25,7 +25,7 @@ public class JwtServiceImpl implements JwtService {
     private String expiredTime;
 
     @Override
-    public String extractUsername(String token){
+    public String extractUsername(String token) throws ExpiredJwtException{
         return  extractClaim(token, Claims::getSubject);
     }
 

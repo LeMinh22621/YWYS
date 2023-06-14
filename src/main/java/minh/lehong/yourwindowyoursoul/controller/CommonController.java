@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
+@CrossOrigin(origins = "*")//{"http://localhost:3000", "http://192.168.1.19:3000"})
 public class CommonController {
 
     @Autowired

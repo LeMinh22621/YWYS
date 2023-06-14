@@ -9,10 +9,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TimerRequest {
+    @JsonProperty("timer_id")
+    private String timerId;
     @JsonProperty("short_break")
     private Long shortBreak;
     @JsonProperty("long_break")
     private Long longBreak;
     @JsonProperty("pomodoro_time")
     private Long pomodoroTime;
+    @JsonProperty("loop_times")
+    private Long loopTimes;
+
+    @JsonProperty("gr_long_break")
+    private Long grLongBreak;
+    @JsonProperty("gr_short_break")
+    private Long grShortBreak;
+    @JsonProperty("gr_pomodoro_time")
+    private Long grPomodoroTime;
+    @JsonProperty("gr_loop_times")
+    private Long grLoopTimes;
 }

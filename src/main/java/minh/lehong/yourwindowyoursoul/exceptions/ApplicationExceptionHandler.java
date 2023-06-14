@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 //@ControllerAdvice
-@RestControllerAdvice
+@ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,

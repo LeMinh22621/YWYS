@@ -23,7 +23,7 @@ public class RoomDto {
     @JsonProperty("description")
     private String description;
     @JsonProperty("members")
-    private int members;
+    private Integer members;
     @JsonProperty("is_public")
     private Boolean isPublic;
     @JsonProperty("background")

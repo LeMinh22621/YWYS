@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.extern.java.Log;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,9 +23,14 @@ public class Timer extends EntityCommon {
     public Timer()
     {
         this.timerId = UUID.randomUUID();
-        this.longBreak = 900000l;
-        this.shortBreak = 300000l;
-        this.pomodoroTime = 1500000l;
+        this.longBreak = 900l;
+        this.shortBreak = 300l;
+        this.pomodoroTime = 1500l;
+        this.loopTimes = 3l;
+        this.grLongBreak = 900l;
+        this.grShortBreak = 300l;
+        this.grPomodoroTime = 1500l;
+        this.grLoopTimes = 3l;
         setIsDeleted(false);
     }
     @Id
@@ -40,4 +46,15 @@ public class Timer extends EntityCommon {
     private Long shortBreak;
     @Column(name = "pomodoro_time")
     private Long pomodoroTime;
+    @Column(name = "loop_times")
+    private Long loopTimes;
+
+    @Column(name = "gr_long_break")
+    private Long grLongBreak;
+    @Column(name = "gr_short_break")
+    private Long grShortBreak;
+    @Column(name = "gr_pomodoro_time")
+    private Long grPomodoroTime;
+    @Column(name = "gr_loop_times")
+    private Long grLoopTimes;
 }

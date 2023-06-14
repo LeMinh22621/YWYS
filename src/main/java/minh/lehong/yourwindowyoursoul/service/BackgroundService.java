@@ -21,4 +21,6 @@ public interface BackgroundService {
     Background getFirstBackground();
 
     Background getRandomBackgroundByTheme(String themeId);
+
+    Background findById(UUID backgroundId);
 }

@@ -1,8 +1,10 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
+import minh.lehong.yourwindowyoursoul.constant.Constant;
 import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.converter.impl.CommonConverterImpl;
 import minh.lehong.yourwindowyoursoul.dto.RoomDto;
+import minh.lehong.yourwindowyoursoul.dto.TimerDto;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.RoomRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.RoomItemResponse;
@@ -12,6 +14,7 @@ import minh.lehong.yourwindowyoursoul.model.entity.*;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
 import minh.lehong.yourwindowyoursoul.repository.RoomRepository;
 import minh.lehong.yourwindowyoursoul.service.*;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -126,12 +129,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Response shuffleMotivationalQuote() {
         Response response = new Response();
-
         response.setData(commonConverter.convertMotivationalQuoteEntityToMotivationalQuoteDto(motivationalQuoteService.getFirstMotivationalQuote()));
         response.setStatus(true);
         response.setReturnCode(HttpStatus.OK.value());
         response.setMessage("shuffle Motivational Quote success!");
-
         return response;
     }
 
@@ -188,6 +189,66 @@ public class RoomServiceImpl implements RoomService {
         {
             response = new Response(null, false, "GET My Room List Failed!", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
+        return response;
+    }
+
+    @Override
+    public Response updateRoomApart(String roomId, RoomRequest updateRoomRequest) throws ParseException {
+        Response response;
+        try
+        {
+            RoomDto roomDto = commonConverter.convertRoomRequestToRoomDto(updateRoomRequest);
+            if((roomId != null || !roomId.isEmpty()) && roomDto != null)
+            {
+                // update date
+                roomDto.setUpdateDate(commonConverter.convertToG7(new Date()));
+                // fetch room by roomId
+                Room room = this.findRoomById(UUID.fromString(roomId));
+                // convert to Room Entity
+                room = commonConverter.convertRoomDtoToRoomEntity(room, roomDto);
+                // set relative update
+                if(updateRoomRequest.getTimerRequest() != null)
+                {
+                    Timer timer = timerService.findById(UUID.fromString(updateRoomRequest.getTimerRequest().getTimerId()));
+                    TimerDto timerDto = commonConverter.convertTimerEntityToTimerDto(timer);
+                    timerDto = commonConverter.convertTimerRequestToTimerDto(timerDto, updateRoomRequest.getTimerRequest());
+
+                    timer = commonConverter.convertTimerDtoToTimerEntity(timer, timerDto);
+//                    try
+//                    {
+//                        timer = timerService.save(timer);
+                        room.setTimer(timer);
+//                    }
+//                    catch (Exception e)
+//                    {
+//                        return new Response(null, true, "Save Timer Error", HttpStatus.INTERNAL_SERVER_ERROR.value());
+//                    }
+                }
+                if(updateRoomRequest.getBackgroundId() != null)
+                {
+                    Background background = backgroundService.findById(UUID.fromString(updateRoomRequest.getBackgroundId()));
+                    room.setBackground(background);
+                }
+                if(updateRoomRequest.getMotivationalQuoteId() != null)
+                {
+                    MotivationalQuote motivationalQuote = motivationalQuoteService.findById(UUID.fromString(updateRoomRequest.getMotivationalQuoteId()));
+                    room.setMotivationalQuote(motivationalQuote);
+                }
+
+                room = this.saveRoom(room);
+                response = new Response(commonConverter.convertRoomDtoToRoomResponse(commonConverter.convertRoomEntityToRoomDto(room)),
+                        true, "Update Room Success!", HttpStatus.OK.value());
+            }
+            else {
+                response = new Response(null, false, "Bad Request!", HttpStatus.BAD_REQUEST.value());
+            }
+        }
+        catch (Exception e)
+        {
+            response = new Response(null, false, "Bad Request!", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+
         return response;
     }
 }

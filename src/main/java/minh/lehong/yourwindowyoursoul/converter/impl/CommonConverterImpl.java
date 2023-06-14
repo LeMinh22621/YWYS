@@ -193,6 +193,11 @@ public class CommonConverterImpl implements CommonConverter {
             timerDto.setShortBreak(timerEntity.getShortBreak());
             timerDto.setLongBreak(timerEntity.getLongBreak());
             timerDto.setPomodoroTime(timerEntity.getPomodoroTime());
+            timerDto.setLoopTimes(timerEntity.getLoopTimes());
+            timerDto.setGrLongBreak(timerEntity.getGrLongBreak());
+            timerDto.setGrShortBreak(timerEntity.getGrShortBreak());
+            timerDto.setGrPomodoroTime(timerEntity.getGrPomodoroTime());
+            timerDto.setGrLoopTimes(timerEntity.getGrLoopTimes());
             timerDto.setIsDeleted(timerEntity.getIsDeleted());
             timerDto.setCreateDate(timerEntity.getCreateDate());
             timerDto.setUpdateDate(timerEntity.getUpdatedDate());
@@ -321,6 +326,11 @@ public class CommonConverterImpl implements CommonConverter {
             timer.setPomodoroTime(timerDto.getPomodoroTime());
             timer.setLongBreak(timerDto.getLongBreak());
             timer.setShortBreak(timerDto.getShortBreak());
+            timer.setLoopTimes(timerDto.getLoopTimes());
+            timer.setGrLongBreak(timerDto.getGrLongBreak());
+            timer.setGrShortBreak(timerDto.getGrShortBreak());
+            timer.setGrPomodoroTime(timerDto.getGrPomodoroTime());
+            timer.setGrLoopTimes(timerDto.getGrLoopTimes());
             timer.setIsDeleted(timerDto.getIsDeleted());
             timer.setCreateDate(timerDto.getCreateDate());
             timer.setUpdatedDate(timerDto.getUpdateDate());
@@ -449,12 +459,24 @@ public class CommonConverterImpl implements CommonConverter {
     public TimerDto convertTimerRequestToTimerDto(TimerDto timerDto, TimerRequest timerRequest) {
         if(timerRequest != null)
         {
+            if(timerRequest.getTimerId() != null)
+                timerDto.setTimerId(timerRequest.getTimerId());
             if(timerRequest.getLongBreak() != null)
                 timerDto.setLongBreak(timerRequest.getLongBreak());
             if(timerRequest.getPomodoroTime() != null)
                 timerDto.setPomodoroTime(timerRequest.getPomodoroTime());
             if(timerRequest.getShortBreak() != null)
                 timerDto.setShortBreak(timerRequest.getShortBreak());
+            if(timerRequest.getLoopTimes() != null)
+                timerDto.setLoopTimes(timerRequest.getLoopTimes());
+            if(timerRequest.getGrLongBreak() != null)
+                timerDto.setGrLongBreak(timerRequest.getGrLongBreak());
+            if(timerRequest.getGrShortBreak() != null)
+                timerDto.setGrShortBreak(timerRequest.getGrShortBreak());
+            if(timerRequest.getGrPomodoroTime() != null)
+                timerDto.setGrPomodoroTime(timerRequest.getGrPomodoroTime());
+            if(timerRequest.getGrLoopTimes() != null)
+                timerDto.setGrLoopTimes(timerRequest.getGrLoopTimes());
         }
         return timerDto;
     }
@@ -607,9 +629,12 @@ public class CommonConverterImpl implements CommonConverter {
         if(roomRequest != null)
         {
             roomDto = new RoomDto();
+            if(roomRequest.getTimerRequest() != null)
+                roomDto.setTimerDto(this.convertTimerRequestToTimerDto(new TimerDto(), roomRequest.getTimerRequest()));
             roomDto.setTitle(roomRequest.getTitle());
             roomDto.setDescription(roomRequest.getDescription());
             roomDto.setIsPublic(roomRequest.getIsPublic());
+            roomDto.setMembers(roomRequest.getMembers());
         }
         return roomDto;
     }
@@ -621,10 +646,14 @@ public class CommonConverterImpl implements CommonConverter {
         {
             if(roomDto.getRoomId() != null)
                 room.setRoomId(UUID.fromString(roomDto.getRoomId()));
-            room.setTitle(roomDto.getTitle());
-            room.setDescription(roomDto.getDescription());
-            room.setMembers(roomDto.getMembers());
-            room.setIsPublic(roomDto.getIsPublic());
+            if(roomDto.getTitle() != null)
+                room.setTitle(roomDto.getTitle());
+            if(roomDto.getDescription() != null)
+                room.setDescription(roomDto.getDescription());
+            if(roomDto.getMembers() != null)
+                room.setMembers(roomDto.getMembers());
+            if(roomDto.getIsPublic() != null)
+                room.setIsPublic(roomDto.getIsPublic());
             if(roomDto.getUserDto() != null)
                 room.setUser(this.convertUserDtoToUserEntity(new User(), roomDto.getUserDto()));
             if(roomDto.getTimerDto() != null)
@@ -633,9 +662,12 @@ public class CommonConverterImpl implements CommonConverter {
                 room.setBackground(this.convertBackgroundDtoToBackGroundEntity(new Background(), roomDto.getBackgroundDto()));
             if(roomDto.getMotivationalQuoteDto() != null)
                 room.setMotivationalQuote(this.convertMotivationalQuoteDtoToMotivationalQuoteEntity(new MotivationalQuote(), roomDto.getMotivationalQuoteDto()));
-            room.setCreateDate(roomDto.getCreateDate());
-            room.setUpdatedDate(roomDto.getUpdateDate());
-            room.setIsDeleted(roomDto.getIsDeleted());
+            if(roomDto.getCreateDate() != null)
+                room.setCreateDate(roomDto.getCreateDate());
+            if(roomDto.getUpdateDate() != null)
+                room.setUpdatedDate(roomDto.getUpdateDate());
+            if(roomDto.getIsDeleted() != null)
+                room.setIsDeleted(roomDto.getIsDeleted());
         }
         return room;
     }

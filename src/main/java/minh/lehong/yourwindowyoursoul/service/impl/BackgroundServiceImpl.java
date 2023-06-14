@@ -89,4 +89,9 @@ public class BackgroundServiceImpl implements BackgroundService {
     public Background getRandomBackgroundByTheme(String themeId) {
         return backgroundRepository.getRandomBackgroundByTheme(themeId);
     }
+
+    @Override
+    public Background findById(UUID backgroundId) {
+        return backgroundRepository.findById(backgroundId).orElseThrow(() -> new DBException("Have NO BackgroundId"));
+    }
 }

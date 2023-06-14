@@ -24,4 +24,6 @@ public interface RoomService {
     Response shuffleBackgroundByThemeId(String themeId);
 
     Response getMyRoomListByUserId(String userId);
+
+    Response updateRoomApart(String roomId, RoomRequest updateRoomRequest) throws ParseException;
 }

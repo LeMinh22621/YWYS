@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.controller;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import minh.lehong.yourwindowyoursoul.dto.TimerDto;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/room")
-@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
+@CrossOrigin(origins = "*")//(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
 public class RoomController {
     @Autowired
     private BackgroundService backgroundService;
@@ -69,13 +70,18 @@ public class RoomController {
     /***
      * Room
      */
+    @PatchMapping("update-room-apart/{room_id}")
+    public ResponseEntity<?> updateRoomApart(@PathVariable("room_id") String roomId, @RequestBody RoomRequest updateRoomRequest) throws ParseException {
+        Response response = roomService.updateRoomApart(roomId, updateRoomRequest);
+        return ResponseEntity.ok(response);
+    }
     @PostMapping("/create-room")
     public ResponseEntity<?> createRoom(@RequestHeader("Authorization") String authHeader, @RequestBody RoomRequest roomRequest) throws ParseException {
         Response response = roomService.createRoom(authHeader, roomRequest);
         return ResponseEntity.ok(response);
     }
     @GetMapping("{userId}/my-rooms")
-    public ResponseEntity<?> getMyRoomList(@PathVariable("userId") String userId)
+    public ResponseEntity<?> getMyRoomList(@PathVariable("userId") String userId) throws ExpiredJwtException
     {
         Response response = roomService.getMyRoomListByUserId(userId);
         return ResponseEntity.ok(response);
@@ -83,7 +89,6 @@ public class RoomController {
     @GetMapping()
     public ResponseEntity<?> getRoom(@RequestParam("room_id") String roomId){
         Response response = roomService.getRoomFromRoomId(roomId);
-
         return ResponseEntity.ok(response);
     }
     /***
@@ -92,7 +97,7 @@ public class RoomController {
     @GetMapping("shuffle-motivational-quote")
     public ResponseEntity<?> shuffleMotivationalQuote(){
         Response response = roomService.shuffleMotivationalQuote();
-
+        System.out.println("Day la API goi motivational quote");
         return ResponseEntity.ok(response);
     }
     @GetMapping("shuffle-background-by-theme-id")
