@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import minh.lehong.yourwindowyoursoul.dto.ThemeDto;
 
+import java.io.Serializable;
+
 @Data
-public class BackgroundResponse {
+public class BackgroundResponse implements Serializable {
     @JsonProperty("background_id")
     private String backgroundId;
     @JsonProperty("background_link")

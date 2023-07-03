@@ -6,11 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThemeDto {
+public class ThemeDto implements Serializable {
     @JsonProperty("theme_id")
     private String themeId;
     @JsonProperty("theme_name")

@@ -6,12 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskManagerDto {
+public class TaskManagerDto implements Serializable {
     @JsonProperty("task_manager_id")
     private String taskManagerId;
 

@@ -20,6 +20,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Task extends EntityCommon implements Serializable {
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "task_id")
     @GeneratedValue(generator = "UUID")

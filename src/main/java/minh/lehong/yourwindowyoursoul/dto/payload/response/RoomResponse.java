@@ -7,10 +7,11 @@ import minh.lehong.yourwindowyoursoul.dto.MotivationalQuoteDto;
 import minh.lehong.yourwindowyoursoul.dto.TimerDto;
 import minh.lehong.yourwindowyoursoul.dto.UserDto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class RoomResponse {
+public class RoomResponse implements Serializable {
     @JsonProperty("room_id")
     private String roomId;
     @JsonProperty("title")

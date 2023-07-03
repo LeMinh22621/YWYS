@@ -18,6 +18,7 @@ import java.util.UUID;
 @Setter
 public class Theme implements Serializable
 {
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "theme_id")
     @GeneratedValue(generator = "UUID")

@@ -11,10 +11,6 @@ import java.util.Date;
 public interface CommonConverter {
     public UserResponse convertUserEntityToUserResponse(final User user) throws ParseException;
 
-//    User convertUserRequestToUserEntity(final UserRequest userRequest);
-
-//    User convertSignupRequestToUserEntity(final SignupRequest signupRequest);
-
     Response convertToResponse(final Object data, final int returnCode, final String message, String... title);
 
     Date convertStringToDate(String dateString);
@@ -78,4 +74,16 @@ public interface CommonConverter {
     RoomItemResponse convertRoomDtoToRoomItemResponse(RoomDto roomDto);
 
     RoomDto convertRoomRequestToRoomDto(RoomRequest roomRequest) throws ParseException;
+
+    FullTaskManagerResponse convertTaskManagerEntityToFullTaskManagerResponse(TaskManager taskManager);
+
+    FullTaskResponse convertTaskEntityToFullTaskResponse(Task task);
+
+    FullTaskLabelResponse convertTaskLabelEntityToFullTaskLabelResponse(TaskLabel taskLabel);
+
+    FullThemeResponse convertThemeEntityToFullThemeResponse(Theme theme);
+
+    UserDto convertUserRequestToUserDto(UserDto userDto, UserRequest userRequest);
+
+    BackgroundDto convertBackgroundRequestToBackgroundDto(BackgroundDto backgroundDto, BackgroundRequest backgroundRequest);
 }

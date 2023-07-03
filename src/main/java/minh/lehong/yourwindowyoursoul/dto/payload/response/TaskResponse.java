@@ -5,10 +5,11 @@ import lombok.Data;
 import minh.lehong.yourwindowyoursoul.dto.LabelDto;
 import minh.lehong.yourwindowyoursoul.model.entity.TaskManager;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class TaskResponse {
+public class TaskResponse implements Serializable {
     @JsonProperty("task_id")
     private String taskId;
 

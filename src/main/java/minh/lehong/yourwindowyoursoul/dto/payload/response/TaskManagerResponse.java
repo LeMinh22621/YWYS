@@ -3,10 +3,11 @@ package minh.lehong.yourwindowyoursoul.dto.payload.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class TaskManagerResponse {
+public class TaskManagerResponse implements Serializable {
     @JsonProperty("task_manager_id")
     private String taskManagerId;
 

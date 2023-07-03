@@ -9,7 +9,6 @@ import java.io.Serializable;
 
 @Data
 public class Response implements Serializable {
-
     @JsonProperty("data")
     private Object data;
     @JsonProperty("status")

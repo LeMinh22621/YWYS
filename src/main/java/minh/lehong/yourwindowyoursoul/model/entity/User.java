@@ -23,7 +23,8 @@ import java.util.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class User extends EntityCommon implements UserDetails {
+public class User extends EntityCommon implements UserDetails, Serializable{
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "user_id")
     @GeneratedValue(generator = "UUID")

@@ -15,4 +15,9 @@ public class LoginRequest implements Serializable {
     @NotEmpty
     @JsonProperty("password")
     private String password;
+
+    @Override
+    public String toString() {
+        return new StringBuilder().append(email + "," + password).toString();
+    }
 }

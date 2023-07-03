@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class MotivationalQuote implements Serializable {
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "motivational_quote_id")
     @GeneratedValue(generator = "UUID")

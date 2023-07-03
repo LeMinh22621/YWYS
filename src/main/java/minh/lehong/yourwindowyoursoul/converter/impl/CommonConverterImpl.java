@@ -13,6 +13,7 @@ import minh.lehong.yourwindowyoursoul.service.TaskManagerService;
 import minh.lehong.yourwindowyoursoul.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -21,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class CommonConverterImpl implements CommonConverter {
@@ -35,6 +37,9 @@ public class CommonConverterImpl implements CommonConverter {
 
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse convertUserEntityToUserResponse(final User user) throws ParseException {
@@ -637,6 +642,118 @@ public class CommonConverterImpl implements CommonConverter {
             roomDto.setMembers(roomRequest.getMembers());
         }
         return roomDto;
+    }
+
+    @Override
+    public FullTaskManagerResponse convertTaskManagerEntityToFullTaskManagerResponse(TaskManager taskManager) {
+        FullTaskManagerResponse response = null;
+
+        if(taskManager != null)
+        {
+            response = new FullTaskManagerResponse();
+            response.setTaskManagerId(taskManager.getTaskManagerId().toString());
+            response.setTaskManagerTitle(taskManager.getTaskManagerTitle());
+            response.setCreateDate(taskManager.getCreateDate());
+            response.setUpdateDate(taskManager.getUpdatedDate());
+            response.setIsDeleted(taskManager.getIsDeleted());
+            response.setRoomId(taskManager.getRoom().getRoomId().toString());
+
+            response.setTaskResponseList(
+                    taskManager.getTasks()
+                            .stream()
+                            .filter(task -> task.getIsDeleted() == false)
+                            .map(task -> this.convertTaskEntityToFullTaskResponse(task))
+                            .collect(Collectors.toList()));
+        }
+
+        return response;
+    }
+
+    @Override
+    public FullTaskResponse convertTaskEntityToFullTaskResponse(Task task) {
+        FullTaskResponse fullTaskResponse = null;
+        if(task != null)
+        {
+            fullTaskResponse = new FullTaskResponse();
+            fullTaskResponse.setTaskId(task.getTaskId().toString());
+            fullTaskResponse.setTaskContent(task.getTaskContent());
+            fullTaskResponse.setTaskIntend(task.getTaskIntend());
+            fullTaskResponse.setTaskStartTime(task.getTaskStartTime());
+            fullTaskResponse.setTaskStartDate(task.getTaskStartDate());
+            fullTaskResponse.setIsDone(task.getIsDone());
+            fullTaskResponse.setTaskManagerId(task.getTaskManager().getTaskManagerId().toString());
+            fullTaskResponse.setFullTaskLabelResponses(
+                    task.getTaskLabels()
+                            .stream()
+                            .map(taskLabel -> this.convertTaskLabelEntityToFullTaskLabelResponse(taskLabel))
+                            .collect(Collectors.toList()));
+        }
+        return fullTaskResponse;
+    }
+
+    @Override
+    public FullTaskLabelResponse convertTaskLabelEntityToFullTaskLabelResponse(TaskLabel taskLabel) {
+        FullTaskLabelResponse response = null;
+
+        if(taskLabel != null)
+        {
+            response = new FullTaskLabelResponse();
+            response.setTaskId(taskLabel.getTask().getTaskId().toString());
+            response.setTaskLabelId(taskLabel.getTaskLabelId().toString());
+            response.setLabelResponse(this.convertLabelDtoToLabelResponse(this.convertLabelEntityToLabelDto(taskLabel.getLabel())));
+        }
+
+        return response;
+    }
+
+    @Override
+    public FullThemeResponse convertThemeEntityToFullThemeResponse(Theme theme) {
+        FullThemeResponse response = null;
+
+        if(theme != null)
+        {
+            response = new FullThemeResponse();
+            response.setThemeId(theme.getThemeId().toString());
+            response.setThemeName(theme.getThemeName());
+            response.setBackgroundResponses(
+                    theme.getBackgrounds()
+                            .stream()
+                            .map(background -> this.convertBackgroundDtoToBackGroundResponse(this.convertBackgroundEntityToBackgroundDto(background)))
+                            .collect(Collectors.toList()));
+        }
+
+        return response;
+    }
+
+    @Override
+    public UserDto convertUserRequestToUserDto(UserDto userDto, UserRequest userRequest) {
+        if(userRequest != null)
+        {
+            if(userRequest.getEmail() != null)
+                userDto.setEmail(userRequest.getEmail());
+            if(userRequest.getFirstName() != null)
+                userDto.setFirstName(userRequest.getFirstName());
+            if(userRequest.getLastName() != null)
+                userDto.setLastName(userRequest.getLastName());
+            if(userRequest.getDateModified() != null)
+                userDto.setDateModified(userRequest.getDateModified());
+            if(userRequest.getDateCreated() != null)
+                userDto.setDateCreated(userRequest.getDateCreated());
+            if(userRequest.getUrlAvatar() != null)
+                userDto.setUrlAvatar(userRequest.getUrlAvatar());
+            if(userRequest.getPassword() != null)
+                userDto.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        }
+        return userDto;
+    }
+
+    @Override
+    public BackgroundDto convertBackgroundRequestToBackgroundDto(BackgroundDto backgroundDto, BackgroundRequest backgroundRequest) {
+        if(backgroundRequest != null){
+            backgroundDto.setBackgroundLink(backgroundRequest.getBackgroundLink());
+            backgroundDto.setImageLink(backgroundRequest.getBackgroundImage());
+        }
+        return backgroundDto;
     }
 
 

@@ -1,5 +1,6 @@
 package minh.lehong.yourwindowyoursoul.repository;
 
+import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,9 +17,12 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID>{
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailAndIsDeleted(String email, boolean isDeleted);
+    Optional<User> findByEmailAndPasswordAndIsDeleted(String email, String password, boolean isDeleted);
 
     boolean existsUserByEmail(String email);
 
-    Optional<User> findUserByUserId(UUID userId);
+    Optional<User> findUserByUserIdAndIsDeleted(UUID userId, boolean isDeleted);
+
+    List<User> findAllByRoleAndIsDeleted(Role role, boolean isDeleted);
 }

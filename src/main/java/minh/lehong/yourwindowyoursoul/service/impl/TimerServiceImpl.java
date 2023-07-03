@@ -11,6 +11,8 @@ import minh.lehong.yourwindowyoursoul.repository.TimerRepository;
 import minh.lehong.yourwindowyoursoul.service.RoomService;
 import minh.lehong.yourwindowyoursoul.service.TimerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,40 +25,16 @@ import java.util.UUID;
 public class TimerServiceImpl implements TimerService {
     @Autowired
     private TimerRepository timerRepository;
-
-    @Autowired
-    private CommonConverter commonConverter;
-
-    @Autowired
-    private RoomService roomService;
     @Override
+    @Cacheable(key = "#uuid", value = "timer")
     public Timer findById(UUID uuid) {
         return timerRepository.findById(uuid)
                 .orElseThrow(() -> new DBException("Get Timer by TimerId Error!"));
     }
 
     @Override
+    @CachePut(value = "timer", condition = "#result != null && #result.timerId != null", key = "#result.timerId")
     public Timer save(Timer timer) {
         return timerRepository.save(timer);
-    }
-
-    @Override
-    public Response updateTimer(String timerId, TimerRequest timerRequest) throws ParseException {
-        Response response;
-        Timer timer = timerRepository.findById(UUID.fromString(timerId)).orElseThrow(() -> new DBException("find timer Id error"));
-        TimerDto timerDto = commonConverter.convertTimerEntityToTimerDto(timer);
-        timerDto = commonConverter.convertTimerRequestToTimerDto(timerDto, timerRequest);
-        timerDto.setUpdateDate(commonConverter.convertToG7(new Date()));
-        timer = commonConverter.convertTimerDtoToTimerEntity(timer, timerDto);
-        try {
-            timer = timerRepository.save(timer);
-            response = new Response(commonConverter.convertTimerEntityToTimerDto(timer),
-                    true, "Update Timer Success!", HttpStatus.OK.value());
-        }
-        catch (Exception e)
-        {
-            response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
-        return response;
     }
 }

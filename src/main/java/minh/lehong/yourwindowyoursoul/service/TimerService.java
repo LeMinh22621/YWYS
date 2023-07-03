@@ -14,6 +14,4 @@ public interface TimerService {
     Timer findById(UUID uuid);
 
     Timer save(Timer timer);
-
-    Response updateTimer(String roomId, TimerRequest timerRequest) throws ParseException;
 }

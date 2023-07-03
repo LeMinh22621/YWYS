@@ -18,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TaskManager extends EntityCommon implements Serializable {
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "task_manager_id")
     @GeneratedValue(generator = "UUID")

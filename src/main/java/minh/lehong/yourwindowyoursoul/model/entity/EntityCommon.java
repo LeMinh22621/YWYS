@@ -11,7 +11,7 @@ import java.util.Date;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class EntityCommon{
+public abstract class EntityCommon implements Serializable{
     @Column(name = "create_date", updatable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty("create_date")

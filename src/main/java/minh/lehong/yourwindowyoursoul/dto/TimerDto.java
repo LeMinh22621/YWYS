@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimerDto {
+public class TimerDto implements Serializable {
     @JsonProperty("timer_id")
     private String timerId;
     @JsonProperty("short_break")

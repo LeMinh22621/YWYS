@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.repository;
 
 import minh.lehong.yourwindowyoursoul.model.entity.Room;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,6 @@ public interface RoomRepository  extends JpaRepository<Room, UUID> {
     Collection<UUID> findRoomIdByUserId(UUID userId);
 
     List<Room> findRoomsByUserAndIsDeleted(User user, boolean isDeleted);
+
+    List<Room> findRoomsByIsPublicAndIsDeletedOrderByMembers(boolean isPublic, boolean isDeleted);
 }

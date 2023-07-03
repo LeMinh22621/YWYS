@@ -10,4 +10,6 @@ public interface MotivationalQuoteService {
     MotivationalQuote findById(UUID uuid);
 
     MotivationalQuote getFirstMotivationalQuote();
+
+    MotivationalQuote getRandomMotivationalQuote();
 }

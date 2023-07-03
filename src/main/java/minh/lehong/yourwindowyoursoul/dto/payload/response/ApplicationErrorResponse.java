@@ -2,8 +2,10 @@ package minh.lehong.yourwindowyoursoul.dto.payload.response;
 
 import org.springframework.http.HttpStatus;
 
+import java.io.Serializable;
 
-public class ApplicationErrorResponse {
+
+public class ApplicationErrorResponse implements Serializable {
 
 	private String message;
 	

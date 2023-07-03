@@ -2,6 +2,7 @@ package minh.lehong.yourwindowyoursoul.controller;
 
 import minh.lehong.yourwindowyoursoul.dto.payload.request.RoomRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
+import minh.lehong.yourwindowyoursoul.facade.RoomFacade;
 import minh.lehong.yourwindowyoursoul.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin(origins = "*")//{"http://localhost:3000", "http://192.168.1.19:3000"})
+//@CrossOrigin(origins = "*")//{"http://localhost:3000", "http://192.168.1.19:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
+@CrossOrigin(origins = "*")
 public class CommonController {
+
+    @Autowired
+    private RoomFacade roomFacade;
 
     @Autowired
     RoomService roomService;
@@ -26,7 +32,7 @@ public class CommonController {
     @GetMapping("/my-rooms")
     public ResponseEntity<?> getMyRooms(@RequestHeader("Authorization") String authHeader)
     {
-        Response response = roomService.getMyRooms(authHeader);
+        Response response = roomFacade.getMyRooms(authHeader);
         return ResponseEntity.ok(response);
     }
 }

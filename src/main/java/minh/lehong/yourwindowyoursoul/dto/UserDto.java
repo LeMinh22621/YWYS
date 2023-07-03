@@ -8,6 +8,7 @@ import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserDto implements Serializable {
     @JsonProperty("user_id")
     private UUID userId;
 

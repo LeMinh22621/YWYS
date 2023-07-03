@@ -18,20 +18,19 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Timer extends EntityCommon {
-
+public class Timer extends EntityCommon implements Serializable{
+    private final long serialVersionUID = 1234567890l;
     public Timer()
     {
-        this.timerId = UUID.randomUUID();
         this.longBreak = 900l;
         this.shortBreak = 300l;
         this.pomodoroTime = 1500l;
-        this.loopTimes = 3l;
+        this.loopTimes = 4l;
         this.grLongBreak = 900l;
         this.grShortBreak = 300l;
         this.grPomodoroTime = 1500l;
-        this.grLoopTimes = 3l;
-        setIsDeleted(false);
+        this.grLoopTimes = 4l;
+        this.setIsDeleted(false);
     }
     @Id
     @Column(name = "timer_id")

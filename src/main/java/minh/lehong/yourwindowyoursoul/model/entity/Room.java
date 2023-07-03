@@ -18,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Room extends EntityCommon implements Serializable {
+    private final long serialVersionUID = 1234567890l;
 
     public Room(User user, Background background, MotivationalQuote motivationalQuote, Timer timer)
     {
@@ -25,7 +26,6 @@ public class Room extends EntityCommon implements Serializable {
         this.background = background;
         this.motivationalQuote = motivationalQuote;
         this.timer = timer;
-        this.roomId = UUID.randomUUID();
     }
 
     @Id
@@ -44,7 +44,7 @@ public class Room extends EntityCommon implements Serializable {
     private int members;
     @Column(name = "is_public")
     private Boolean isPublic;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

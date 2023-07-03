@@ -1,57 +1,61 @@
 package minh.lehong.yourwindowyoursoul.controller;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import minh.lehong.yourwindowyoursoul.dto.TimerDto;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
-import minh.lehong.yourwindowyoursoul.model.entity.Background;
-import minh.lehong.yourwindowyoursoul.model.entity.Room;
-import minh.lehong.yourwindowyoursoul.model.entity.TaskManager;
+import minh.lehong.yourwindowyoursoul.facade.*;
 import minh.lehong.yourwindowyoursoul.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/room")
-@CrossOrigin(origins = "*")//(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
+//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
+@CrossOrigin(origins = "*")
 public class RoomController {
     @Autowired
-    private BackgroundService backgroundService;
+    private TaskFacade taskFacade;
     @Autowired
-    private RoomService roomService;
+    private TimerFacade timerFacade;
     @Autowired
-    private TaskService taskService;
+    private LabelFacade labelFacade;
     @Autowired
-    private TaskManagerService taskManagerService;
+    private ThemeFacade themeFacade;
     @Autowired
-    private TimerService timerService;
+    private RoomFacade roomFacade;
     @Autowired
-    private LabelService labelService;
+    private BackgroundFacade backgroundFacade;
+    @Autowired
+    private TaskManagerFacade taskManagerFacade;
     /***
      * Label
      */
     @PostMapping("create-label")
     public ResponseEntity<?> createLabel(@RequestBody LabelRequest labelRequest) throws ParseException {
-        Response response = labelService.createLabel(labelRequest);
+        Response response = labelFacade.createLabel(labelRequest);
         return ResponseEntity.ok(response);
     }
     @PatchMapping("update-label/{label_id}")
     public ResponseEntity<?> updateLabel(@PathVariable("label_id") String labelId, @RequestBody LabelRequest labelRequest) throws ParseException {
-        Response response = labelService.updateLabel(labelId, labelRequest);
+        Response response = labelFacade.updateLabel(labelId, labelRequest);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("delete-label/{label_id}")
     public ResponseEntity<?> deleteLabel(@PathVariable("label_id") String labelId){
-        Response response = labelService.deleteLabel(labelId);
+        Response response = labelFacade.deleteLabel(labelId);
         return ResponseEntity.ok(response);
     }
     @GetMapping("label")
     public ResponseEntity<?> getLabel(@RequestParam("label_id") String labelId){
-        Response response = labelService.getLabel(labelId);
+        Response response = labelFacade.getLabel(labelId);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("labels")
+    public ResponseEntity<?> getAllLabelsByRoomId(@RequestParam("room_id") String roomId){
+        Response response = labelFacade.getAllLabelsByRoomId(roomId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -59,12 +63,12 @@ public class RoomController {
      */
     @GetMapping("/backgrounds")
     public ResponseEntity<?> getBackgroundByTheme(@RequestParam("theme_id") String themeId){
-        Response response = backgroundService.getBackgroundListByThemeId(themeId);
+        Response response = backgroundFacade.getBackgroundListByThemeId(themeId);
         return ResponseEntity.ok(response);
     }
     @GetMapping("/background")
     public ResponseEntity<?> getBackgroundById(@RequestParam("background_id") String backgroundId){
-        Response response = backgroundService.getBackgroundByBackgroundId(backgroundId);
+        Response response = backgroundFacade.getBackgroundByBackgroundId(backgroundId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -72,23 +76,34 @@ public class RoomController {
      */
     @PatchMapping("update-room-apart/{room_id}")
     public ResponseEntity<?> updateRoomApart(@PathVariable("room_id") String roomId, @RequestBody RoomRequest updateRoomRequest) throws ParseException {
-        Response response = roomService.updateRoomApart(roomId, updateRoomRequest);
+        Response response = roomFacade.updateRoomApart(roomId, updateRoomRequest);
         return ResponseEntity.ok(response);
     }
     @PostMapping("/create-room")
     public ResponseEntity<?> createRoom(@RequestHeader("Authorization") String authHeader, @RequestBody RoomRequest roomRequest) throws ParseException {
-        Response response = roomService.createRoom(authHeader, roomRequest);
+        Response response = roomFacade.createRoom(authHeader, roomRequest);
         return ResponseEntity.ok(response);
     }
     @GetMapping("{userId}/my-rooms")
     public ResponseEntity<?> getMyRoomList(@PathVariable("userId") String userId) throws ExpiredJwtException
     {
-        Response response = roomService.getMyRoomListByUserId(userId);
+        Response response = roomFacade.getMyRoomListByUserId(userId);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/public-rooms")
+    public ResponseEntity<?> getPublicRoomsOrderByMembers()
+    {
+        Response response = roomFacade.getPublicRoomsOrderByMembers();
         return ResponseEntity.ok(response);
     }
     @GetMapping()
     public ResponseEntity<?> getRoom(@RequestParam("room_id") String roomId){
-        Response response = roomService.getRoomFromRoomId(roomId);
+        Response response = roomFacade.getRoomFromRoomId(roomId);
+        return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("delete/{room_id}")
+    public ResponseEntity<?> deleteRoomById(@PathVariable("room_id") String roomId){
+        Response response = roomFacade.deleteRoomById(roomId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -96,13 +111,13 @@ public class RoomController {
      */
     @GetMapping("shuffle-motivational-quote")
     public ResponseEntity<?> shuffleMotivationalQuote(){
-        Response response = roomService.shuffleMotivationalQuote();
+        Response response = roomFacade.shuffleMotivationalQuote();
         System.out.println("Day la API goi motivational quote");
         return ResponseEntity.ok(response);
     }
     @GetMapping("shuffle-background-by-theme-id")
     public ResponseEntity<?> shuffleBackgroundByThemeId(@RequestParam("theme_id") String themeId){
-        Response response = roomService.shuffleBackgroundByThemeId(themeId);
+        Response response = roomFacade.shuffleBackgroundByThemeId(themeId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -110,22 +125,22 @@ public class RoomController {
      */
     @PostMapping("create-task")
     public ResponseEntity<?> createTask(@RequestBody TaskRequest taskRequest) throws ParseException {
-        Response response = taskService.save(taskRequest);
+        Response response = taskFacade.save(taskRequest);
         return ResponseEntity.ok(response);
     }
     @PatchMapping("update-task/{task_id}")
     public ResponseEntity<?> updateTask(@PathVariable("task_id") String taskId, @RequestBody TaskRequest taskRequest) throws ParseException {
-        Response response = taskService.updateTask(taskId, taskRequest);
+        Response response = taskFacade.updateTask(taskId, taskRequest);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("delete-task/{task_id}")
     public ResponseEntity<?> deleteTask(@PathVariable("task_id") String taskId){
-        Response response = taskService.deleteTask(taskId);
+        Response response = taskFacade.deleteTask(taskId);
         return ResponseEntity.ok(response);
     }
     @GetMapping("task")
     public ResponseEntity<?> getTaskById(@RequestParam("task_id") String taskId){
-        Response response = taskService.findByTaskIdAndIsDeleted(taskId, false);
+        Response response = taskFacade.findByTaskIdAndIsDeleted(taskId, false);
 
         return ResponseEntity.ok(response);
     }
@@ -134,23 +149,29 @@ public class RoomController {
      */
     @GetMapping("task-manager")
     public ResponseEntity<?> getTaskManagerById(@RequestParam("task_manager_id") String taskManagerId){
-        Response response = taskManagerService.getTaskManagerById(taskManagerId);
+        Response response = taskManagerFacade.getTaskManagerById(taskManagerId);
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("task-manager-list")
+    public ResponseEntity<?> getTaskListManagerByRoomId(@RequestParam("room_id") String roomId){
+        Response response = taskManagerFacade.getTaskListManagerByRoomId(roomId);
 
         return ResponseEntity.ok(response);
     }
     @PostMapping("create-task-manager")
     public ResponseEntity<?> createTaskManager(@RequestBody TaskManagerRequest taskManagerRequest) throws ParseException {
-        Response response = taskManagerService.save(taskManagerRequest);
+        Response response = taskManagerFacade.save(taskManagerRequest);
         return ResponseEntity.ok(response);
     }
     @PatchMapping("update-task-manager/{task_manager_id}")
     public ResponseEntity<?> updateTaskManager(@PathVariable("task_manager_id") String taskManagerId, @RequestBody TaskManagerRequest taskManagerRequest) throws ParseException {
-        Response response = taskManagerService.updateTaskManager(taskManagerId, taskManagerRequest);
+        Response response = taskManagerFacade.updateTaskManager(taskManagerId, taskManagerRequest);
         return ResponseEntity.ok(response);
     }
     @DeleteMapping("delete-task-manager/{task_manager_id}")
     public ResponseEntity<?> deleteTaskManager(@PathVariable("task_manager_id") String taskManagerId){
-        Response response = taskManagerService.deleteTaskManager(taskManagerId);
+        Response response = taskManagerFacade.deleteTaskManager(taskManagerId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -158,7 +179,15 @@ public class RoomController {
      */
     @PatchMapping("update-timer/{timer_id}")
     public ResponseEntity<?> updateTimer(@PathVariable("timer_id") String timerId, @RequestBody TimerRequest timerRequest) throws ParseException {
-        Response response = timerService.updateTimer(timerId, timerRequest);
+        Response response = timerFacade.updateTimer(timerId, timerRequest);
+        return ResponseEntity.ok(response);
+    }
+    /***
+     * Theme
+     */
+    @GetMapping("themes")
+    public ResponseEntity<?> getAllThemes(){
+        Response response = themeFacade.findAllThemes();
         return ResponseEntity.ok(response);
     }
 }

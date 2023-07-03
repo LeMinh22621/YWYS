@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Label extends EntityCommon implements Serializable {
+    private final long serialVersionUID = 1234567890l;
     @Id
     @Column(name = "label_id")
     @GeneratedValue(generator = "UUID")

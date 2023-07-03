@@ -10,12 +10,13 @@ import minh.lehong.yourwindowyoursoul.model.entity.MotivationalQuote;
 import minh.lehong.yourwindowyoursoul.model.entity.Timer;
 
 import javax.persistence.Column;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomDto {
+public class RoomDto implements Serializable {
     @JsonProperty("room_id")
     private String roomId;
     @JsonProperty("title")

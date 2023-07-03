@@ -3,10 +3,11 @@ package minh.lehong.yourwindowyoursoul.dto.payload.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class LabelResponse {
+public class LabelResponse implements Serializable {
     @JsonProperty("label_id")
     private String labelId;
     @JsonProperty("room_id")

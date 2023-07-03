@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class LabelDto {
+public class LabelDto implements Serializable {
     @JsonProperty("id")
     private String labelDtoId;
     @JsonProperty("name")
