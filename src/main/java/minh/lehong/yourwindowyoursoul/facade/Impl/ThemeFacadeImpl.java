@@ -5,6 +5,7 @@ import minh.lehong.yourwindowyoursoul.dto.payload.response.FullThemeResponse;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.facade.ThemeFacade;
 import minh.lehong.yourwindowyoursoul.model.entity.Theme;
+import minh.lehong.yourwindowyoursoul.service.BackgroundService;
 import minh.lehong.yourwindowyoursoul.service.ThemeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +16,14 @@ import java.util.stream.Collectors;
 
 @Component
 public class ThemeFacadeImpl implements ThemeFacade {
-
     @Autowired
     private ThemeService themeService;
 
     @Autowired
     private CommonConverter commonConverter;
 
+    @Autowired
+    private BackgroundService backgroundService;
 
     @Override
     public Response findAllThemes() {
@@ -29,6 +31,13 @@ public class ThemeFacadeImpl implements ThemeFacade {
         try
         {
             List<Theme> themes = themeService.findAll();
+            themes = themes
+                    .stream()
+                    .map(theme -> {
+                        theme.setBackgrounds(backgroundService.findBackgroundsByTheme(theme));
+                        return theme;
+                    })
+                    .collect(Collectors.toList());
             if(themes == null || themes.isEmpty())
             {
                 response = new Response(null, false, "Have No Themes", HttpStatus.NO_CONTENT.value());

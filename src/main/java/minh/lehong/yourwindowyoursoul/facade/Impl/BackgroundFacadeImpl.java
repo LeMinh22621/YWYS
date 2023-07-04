@@ -59,7 +59,10 @@ public class BackgroundFacadeImpl implements BackgroundFacade {
         Theme theme = themeService.findThemeByThemeId(uuidThemeId);
         Response response = new Response();
         Collection<Background> backgrounds = backgroundService.findBackgroundsByTheme(theme);
-        Collection<BackgroundDto> backgroundDtos = backgrounds.stream().map(background -> commonConverter.convertBackgroundEntityToBackgroundDto(background)).collect(Collectors.toList());
+        Collection<BackgroundDto> backgroundDtos = backgrounds
+                .stream()
+                .map(background -> commonConverter.convertBackgroundEntityToBackgroundDto(background))
+                .collect(Collectors.toList());
 
         response.setData(backgroundDtos);
         response.setMessage("Get List Background based on themeId is ok!");
@@ -102,7 +105,7 @@ public class BackgroundFacadeImpl implements BackgroundFacade {
                         HttpStatus.OK.value());
             }
             else{
-                new Response(null, false, "Bad Request!", HttpStatus.BAD_REQUEST.value());
+                response = new Response(null, false, "Bad Request!", HttpStatus.BAD_REQUEST.value());
             }
         }
         catch (Exception e)
@@ -110,6 +113,73 @@ public class BackgroundFacadeImpl implements BackgroundFacade {
             response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
+        return response;
+    }
+
+    @Override
+    public Response deleteBackground(String backgroundId) {
+        Response response;
+        try {
+            if (backgroundId != null && !backgroundId.isEmpty()) {
+                Background background = backgroundService.findById(UUID.fromString(backgroundId));
+                if (background != null) {
+                    background.setIsDeleted(true);
+                    background = backgroundService.save(background);
+                    response = new Response(commonConverter.convertBackgroundDtoToBackGroundResponse(commonConverter.convertBackgroundEntityToBackgroundDto(background)), true, "Delete Background Success", HttpStatus.OK.value());
+                } else
+                    response = new Response(null, false, "Bad Have No BackgroundId!", HttpStatus.BAD_REQUEST.value());
+            } else
+                response = new Response(null, false, "Bad Request Invalid BackgroundId!", HttpStatus.BAD_REQUEST.value());
+        } catch (Exception e) {
+            response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return response;
+    }
+
+    @Override
+    public Response updateBackground(String backgroundId, MultipartFile file, BackgroundRequest backgroundRequest) {
+        Response response;
+
+        try{
+            if (backgroundId != null && !backgroundId.isEmpty()) {
+                if(file != null && !file.isEmpty())
+                {
+                    // 1. Grab some metadata from file if any
+                    ObjectMetadata metadata = new ObjectMetadata();
+                    metadata.setContentLength(file.getSize());
+                    metadata.setContentType(file.getContentType());
+                    // 2. Store the image in s3 and update database with s3 image link
+                    String path = String.format("%s/image", BucketName.BUCKET_NAME.getBucketName());
+                    String fileName = String.format("%s", file.getOriginalFilename());
+                    // 3. start store
+                    String url = fileStore.save(fileName, file.getInputStream(), metadata);
+                    System.out.println(url);
+
+                    // 4. Store to DB
+                    backgroundRequest.setBackgroundImage(url);
+                }
+                Background background = backgroundService.findById(UUID.fromString(backgroundId));
+                if (background != null) {
+                    BackgroundDto backgroundDto = commonConverter.convertBackgroundEntityToBackgroundDto(background);
+                    backgroundDto = commonConverter.convertBackgroundRequestToBackgroundDto(backgroundDto, backgroundRequest);
+                    background = commonConverter.convertBackgroundDtoToBackGroundEntity(background, backgroundDto);
+
+                    background = backgroundService.save(background);
+                    response = new Response(
+                        commonConverter.convertBackgroundDtoToBackGroundResponse(commonConverter.convertBackgroundEntityToBackgroundDto(background)),
+                        true,
+                        "Update Background Success",
+                        HttpStatus.OK.value()
+                    );
+
+                } else
+                    response = new Response(null, false, "Bad Have No BackgroundId!", HttpStatus.BAD_REQUEST.value());
+            } else
+                response = new Response(null, false, "Bad Request Invalid BackgroundId!", HttpStatus.BAD_REQUEST.value());
+        }
+        catch (Exception e) {
+            response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
         return response;
     }
 }

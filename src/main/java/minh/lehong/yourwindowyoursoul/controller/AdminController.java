@@ -6,8 +6,6 @@ import minh.lehong.yourwindowyoursoul.dto.payload.request.UserRequest;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.facade.BackgroundFacade;
 import minh.lehong.yourwindowyoursoul.facade.UserFacade;
-import minh.lehong.yourwindowyoursoul.service.BackgroundService;
-import minh.lehong.yourwindowyoursoul.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
@@ -19,7 +17,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
 @CrossOrigin(origins = "*")
 public class AdminController {
     @Autowired
@@ -59,6 +56,18 @@ public class AdminController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> handleFileUpload(@RequestPart("file") MultipartFile file,@RequestPart("backgroundRequest") BackgroundRequest backgroundRequest) {
         Response response = backgroundFacade.addNewBackground(file, backgroundRequest);
+        return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/backgrounds/{background_id}")
+    public ResponseEntity<?> deleteBackgroundById(@PathVariable("background_id") String backgroundId){
+        Response response = backgroundFacade.deleteBackground(backgroundId);
+        return ResponseEntity.ok(response);
+    }
+    @PatchMapping(value = "backgrounds/{background_id}",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@PathVariable("background_id") String backgroundId,MultipartFile file,@RequestPart("backgroundRequest") BackgroundRequest backgroundRequest){
+        Response response = backgroundFacade.updateBackground(backgroundId, file, backgroundRequest);
         return ResponseEntity.ok(response);
     }
     /**

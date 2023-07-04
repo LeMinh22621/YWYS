@@ -30,15 +30,6 @@ public class BackgroundServiceImpl implements BackgroundService {
     @Autowired
     private BackgroundRepository backgroundRepository;
 
-    @Autowired
-    private CommonConverter commonConverter;
-
-    @Autowired
-    private ThemeService themeService;
-
-    @Autowired
-    private FileStoreS3Service fileStore;
-
     @Override
     public Background save(Background background) {
         return Optional.of(backgroundRepository.save(background))
@@ -47,7 +38,7 @@ public class BackgroundServiceImpl implements BackgroundService {
 
     @Override
     public Collection<Background> getAllBackgrounds() {
-        return backgroundRepository.findAll();
+        return backgroundRepository.findAllByIsDeleted(false);
     }
 
     @Override
@@ -62,11 +53,11 @@ public class BackgroundServiceImpl implements BackgroundService {
 
     @Override
     public Background findById(UUID backgroundId) {
-        return backgroundRepository.findById(backgroundId).orElseThrow(() -> new DBException("Have No BackgroundId"));
+        return backgroundRepository.findByBackgroundIdAndIsDeleted(backgroundId, false).orElseThrow(() -> new DBException("Have No BackgroundId"));
     }
 
     @Override
     public Collection<Background> findBackgroundsByTheme(Theme theme) {
-        return backgroundRepository.findBackgroundsByTheme(theme);
+        return backgroundRepository.findBackgroundsByThemeAndIsDeleted(theme, false);
     }
 }

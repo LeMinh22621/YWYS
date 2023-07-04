@@ -54,6 +54,7 @@ public class CommonConverterImpl implements CommonConverter {
             userResponse.setDateCreated(user.getCreateDate());
             userResponse.setUrlAvatar(user.getUrlAvatar());
             userResponse.setDeleted(user.getIsDeleted());
+            userResponse.setRole(user.getRole());
             userResponse.setDateCreated(this.convertToG7(user.getCreateDate()));
             userResponse.setDateModified(this.convertToG7(user.getUpdatedDate()));
         }
@@ -562,6 +563,7 @@ public class CommonConverterImpl implements CommonConverter {
             userResponse.setDateCreated(userDto.getDateCreated());
             userResponse.setUrlAvatar(userDto.getUrlAvatar());
             userResponse.setDeleted(userDto.isDeleted());
+            userResponse.setRole(userDto.getRole());
             userResponse.setDateCreated(this.convertToG7(userDto.getDateCreated()));
             userResponse.setDateModified(this.convertToG7(userDto.getDateModified()));
         }
@@ -750,8 +752,10 @@ public class CommonConverterImpl implements CommonConverter {
     @Override
     public BackgroundDto convertBackgroundRequestToBackgroundDto(BackgroundDto backgroundDto, BackgroundRequest backgroundRequest) {
         if(backgroundRequest != null){
-            backgroundDto.setBackgroundLink(backgroundRequest.getBackgroundLink());
-            backgroundDto.setImageLink(backgroundRequest.getBackgroundImage());
+            if(backgroundRequest.getBackgroundLink() != null)
+                backgroundDto.setBackgroundLink(backgroundRequest.getBackgroundLink());
+            if(backgroundRequest.getBackgroundImage() != null)
+                backgroundDto.setImageLink(backgroundRequest.getBackgroundImage());
         }
         return backgroundDto;
     }

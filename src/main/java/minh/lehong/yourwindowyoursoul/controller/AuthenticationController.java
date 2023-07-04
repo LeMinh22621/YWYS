@@ -18,8 +18,6 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-//@CrossOrigin(origins = "*")//{"http://localhost:3000", "http://192.168.1.19:3000"})
-//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AuthenticationController {

@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import minh.lehong.yourwindowyoursoul.model.entity.User;
 import minh.lehong.yourwindowyoursoul.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,8 +31,8 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User user) {
+        return generateToken(new HashMap<>(), user);
     }
 
     @Override
@@ -62,11 +63,13 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private String generateToken(Map<String, Object> extraClaims, User user) {
+        extraClaims.put("email", user.getEmail());
+        extraClaims.put("role", user.getRole());
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(expiredTime)))
                 .signWith(SignatureAlgorithm.HS256, getSignInKey())

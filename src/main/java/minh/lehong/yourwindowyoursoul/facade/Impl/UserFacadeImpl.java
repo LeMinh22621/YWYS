@@ -65,7 +65,7 @@ public class UserFacadeImpl implements UserFacade {
                 User user = commonConverter.convertUserDtoToUserEntity(new User(), userDto);
                 user = userService.save(user);
 
-                var jwtToken = jwtService.generateToken(user);
+                String jwtToken = jwtService.generateToken(user);
 
                 authenticationResponse = AuthenticationResponse.builder()
                         .token(jwtToken)
@@ -89,7 +89,7 @@ public class UserFacadeImpl implements UserFacade {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
-        var jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
 
         AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
                 .token(jwtToken)

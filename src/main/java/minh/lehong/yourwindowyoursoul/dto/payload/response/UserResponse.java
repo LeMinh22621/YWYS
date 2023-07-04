@@ -1,8 +1,8 @@
 package minh.lehong.yourwindowyoursoul.dto.payload.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import minh.lehong.yourwindowyoursoul.constant.enums.Role;
 
 import javax.persistence.Column;
 import java.io.Serializable;
@@ -34,4 +34,7 @@ public class UserResponse implements Serializable {
 
     @JsonProperty("url_avatar")
     private String urlAvatar;
+
+    @JsonProperty("role")
+    private Role role;
 }

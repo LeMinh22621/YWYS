@@ -10,4 +10,8 @@ public interface BackgroundFacade {
     Response getBackgroundListByThemeId(String themeId) throws IllegalArgumentException;
 
     Response addNewBackground(MultipartFile file, BackgroundRequest backgroundRequest);
+
+    Response deleteBackground(String backgroundId);
+
+    Response updateBackground(String backgroundId, MultipartFile file, BackgroundRequest backgroundRequest);
 }

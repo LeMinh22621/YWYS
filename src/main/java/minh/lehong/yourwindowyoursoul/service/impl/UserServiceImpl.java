@@ -1,16 +1,14 @@
 package minh.lehong.yourwindowyoursoul.service.impl;
 
 import minh.lehong.yourwindowyoursoul.constant.enums.Role;
-import minh.lehong.yourwindowyoursoul.converter.CommonConverter;
 import minh.lehong.yourwindowyoursoul.model.entity.User;
 import minh.lehong.yourwindowyoursoul.repository.UserRepository;
-import minh.lehong.yourwindowyoursoul.service.JwtService;
 import minh.lehong.yourwindowyoursoul.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,11 +17,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+
+
     @Override
     @Cacheable(key = "#email", value = "user")
     public User findByEmail(String email) {

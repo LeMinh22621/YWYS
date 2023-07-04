@@ -3,6 +3,7 @@ package minh.lehong.yourwindowyoursoul.model.entity;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;

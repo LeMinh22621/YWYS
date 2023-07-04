@@ -4,7 +4,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import minh.lehong.yourwindowyoursoul.dto.payload.request.*;
 import minh.lehong.yourwindowyoursoul.dto.payload.response.Response;
 import minh.lehong.yourwindowyoursoul.facade.*;
-import minh.lehong.yourwindowyoursoul.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,6 @@ import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/v1/room")
-//@CrossOrigin(origins = {"http://localhost:3000", "http://192.168.1.19:3000"})
 @CrossOrigin(origins = "*")
 public class RoomController {
     @Autowired
