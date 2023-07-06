@@ -435,7 +435,7 @@ public class CommonConverterImpl implements CommonConverter {
         {
             if(motivationalQuoteDto.getMotivationalQuoteId() != null)
                 motivationalQuote.setMotivationalQuoteId(UUID.fromString(motivationalQuoteDto.getMotivationalQuoteId()));
-            motivationalQuote.setAuthor(motivationalQuote.getAuthor());
+            motivationalQuote.setAuthor(motivationalQuoteDto.getAuthor());
             motivationalQuote.setContent(motivationalQuoteDto.getContent());
         }
         return motivationalQuote;
@@ -760,6 +760,27 @@ public class CommonConverterImpl implements CommonConverter {
         return backgroundDto;
     }
 
+    @Override
+    public ThemeDto convertThemeRequestToThemeDto(ThemeDto themeDto, ThemeRequest themeRequest) {
+        if(themeRequest != null)
+        {
+            if(themeRequest.getThemeName() != null)
+                themeDto.setThemeName(themeRequest.getThemeName());
+        }
+        return themeDto;
+    }
+
+    @Override
+    public MotivationalQuoteDto convertMotivationalQuoteRequestToMotivationalQuoteDto(MotivationalQuoteDto motivationalQuoteDto, MotivationalQuoteRequest motivationalQuoteRequest) {
+        if(motivationalQuoteRequest != null)
+        {
+            if(motivationalQuoteRequest.getAuthor() != null)
+                motivationalQuoteDto.setAuthor(motivationalQuoteRequest.getAuthor());
+            if(motivationalQuoteRequest.getContent() != null)
+                motivationalQuoteDto.setContent(motivationalQuoteRequest.getContent());
+        }
+        return motivationalQuoteDto;
+    }
 
     @Override
     public Room convertRoomDtoToRoomEntity(Room room, RoomDto roomDto) {

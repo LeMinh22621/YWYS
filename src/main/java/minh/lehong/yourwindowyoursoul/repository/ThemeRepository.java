@@ -13,4 +13,7 @@ import java.util.UUID;
 public interface ThemeRepository extends JpaRepository<Theme, UUID> {
     @Query("select t from Theme t join fetch Background b")
     List<Theme> getAllThemesAndBackgroundRelative();
+
+    @Override
+    void deleteById(UUID uuid);
 }

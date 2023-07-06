@@ -10,4 +10,8 @@ public interface ThemeService {
     Theme findThemeByThemeId(UUID themeId);
 
     List<Theme> findAll();
+
+    Theme save(Theme theme);
+
+    void delete(UUID themeId);
 }

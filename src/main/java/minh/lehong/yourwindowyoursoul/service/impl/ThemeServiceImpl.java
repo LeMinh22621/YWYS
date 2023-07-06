@@ -8,6 +8,7 @@ import minh.lehong.yourwindowyoursoul.model.entity.Theme;
 import minh.lehong.yourwindowyoursoul.repository.ThemeRepository;
 import minh.lehong.yourwindowyoursoul.service.ThemeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,17 @@ public class ThemeServiceImpl implements ThemeService {
     @Cacheable(value = "themes", key = "'themes'")
     public List<Theme> findAll() {
         return  themeRepository.findAll();
+    }
+
+    @Override
+    @CacheEvict(key = "'themes'", value = "themes")
+    public Theme save(Theme theme) {
+        return themeRepository.save(theme);
+    }
+
+    @Override
+    @CacheEvict(key = "'themes'", value = "themes")
+    public void delete(UUID themeId) {
+        themeRepository.deleteById(themeId);
     }
 }

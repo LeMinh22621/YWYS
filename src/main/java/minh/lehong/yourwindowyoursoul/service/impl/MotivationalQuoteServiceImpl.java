@@ -53,4 +53,19 @@ public class MotivationalQuoteServiceImpl implements MotivationalQuoteService {
         int randomIndex = random.nextInt(size);
         return motivationalQuotes.get(randomIndex);
     }
+
+    @Override
+    public List<MotivationalQuote> getAllMotivationalQuotes() {
+        return motivationalQuoteRepository.findAll();
+    }
+
+    @Override
+    public MotivationalQuote save(MotivationalQuote motivationalQuote) {
+        return motivationalQuoteRepository.save(motivationalQuote);
+    }
+
+    @Override
+    public void deleteMotivationalQuoteById(UUID uuid) {
+        motivationalQuoteRepository.deleteById(uuid);
+    }
 }

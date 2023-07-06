@@ -86,4 +86,8 @@ public interface CommonConverter {
     UserDto convertUserRequestToUserDto(UserDto userDto, UserRequest userRequest);
 
     BackgroundDto convertBackgroundRequestToBackgroundDto(BackgroundDto backgroundDto, BackgroundRequest backgroundRequest);
+
+    ThemeDto convertThemeRequestToThemeDto(ThemeDto themeDto, ThemeRequest themeRequest);
+
+    MotivationalQuoteDto convertMotivationalQuoteRequestToMotivationalQuoteDto(MotivationalQuoteDto motivationalQuoteDto, MotivationalQuoteRequest motivationalQuoteRequest);
 }
