@@ -13,5 +13,5 @@ import java.util.UUID;
 public interface LabelRepository extends JpaRepository<Label, UUID> {
     Optional<Label> findLabelByLabelIdAndIsDeleted(UUID labelId, boolean isDeleted);
 
-    List<Label> findAllByRoom(Room room);
+    List<Label> findAllByRoomAndIsDeleted(Room room, boolean isDeleted);
 }

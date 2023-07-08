@@ -1,0 +1,51 @@
+version: "1.0"
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - server-ywys
+
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=ywys
+      - MYSQL_PASSWORD=123456
+    networks:
+      - mysql-networks
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6739:6739"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - mysql-networks
+
+  server-ywys:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8089:8089"
+    depends_on:
+      - mysqldb
+      - redis
+    networks:
+      - mysql-networks
+networks:
+  mysql-networks:
+    driver: bridge

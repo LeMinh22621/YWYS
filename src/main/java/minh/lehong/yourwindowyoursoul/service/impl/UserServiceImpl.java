@@ -25,10 +25,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    @Cacheable(key = "#email", value = "user")
+    @Cacheable( condition = "#result != null && #result.userId != null", key = "#result.userId", value = "user")
     public User findByEmail(String email) {
         return userRepository.findByEmailAndIsDeleted(email, false)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElse(null);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    @CachePut(key = "#user.email", value = "user")
+    @CachePut(condition = "#result != null && #result.userId != null", key = "#result.userId", value = "user")
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -57,6 +57,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmailAndIsDeleted(username, false).get();
+        return userRepository.findByEmailAndIsDeleted(username, false).orElse(null);
     }
 }

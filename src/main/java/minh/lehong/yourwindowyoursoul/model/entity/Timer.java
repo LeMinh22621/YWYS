@@ -22,13 +22,13 @@ public class Timer extends EntityCommon implements Serializable{
     private final long serialVersionUID = 1234567890l;
     public Timer()
     {
-        this.longBreak = 900l;
-        this.shortBreak = 300l;
-        this.pomodoroTime = 1500l;
+        this.longBreak = 20l;
+        this.shortBreak = 5l;
+        this.pomodoroTime = 225l;
         this.loopTimes = 4l;
-        this.grLongBreak = 900l;
-        this.grShortBreak = 300l;
-        this.grPomodoroTime = 1500l;
+        this.grLongBreak = 20l;
+        this.grShortBreak = 5l;
+        this.grPomodoroTime = 25l;
         this.grLoopTimes = 4l;
         this.setIsDeleted(false);
     }

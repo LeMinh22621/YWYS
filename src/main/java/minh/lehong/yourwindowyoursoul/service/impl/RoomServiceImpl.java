@@ -34,9 +34,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @CachePut(value = "room", condition = "#result != null && #result.roomId != null", key = "#result.roomId")
     public Room saveRoom(Room room) {
-        Room updatedRoom = roomRepository.save(room);
-        this.updatePublicRooms(updatedRoom);
-        return updatedRoom;
+        return roomRepository.save(room);
     }
 
     @Override
@@ -52,7 +50,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    @Cacheable(value = "rooms", key = "'publicPopularRooms'")
     public List<Room> findRoomsByIsPublicAndIsDeletedOrderByMembers(boolean isPublic, boolean isDeleted) {
         return roomRepository.findRoomsByIsPublicAndIsDeletedOrderByMembers(isPublic, isDeleted);
     }
@@ -77,7 +74,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    @Cacheable(value = "rooms", key = "'myRooms'")
     public List<Room> findRoomsByUserAndIsDeleted(User user, boolean isDeleted) {
         return roomRepository.findRoomsByUserAndIsDeleted(user, isDeleted);
     }

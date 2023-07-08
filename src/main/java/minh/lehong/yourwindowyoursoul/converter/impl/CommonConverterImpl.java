@@ -687,6 +687,7 @@ public class CommonConverterImpl implements CommonConverter {
             fullTaskResponse.setFullTaskLabelResponses(
                     task.getTaskLabels()
                             .stream()
+                            .filter(taskLabel -> taskLabel.getIsDeleted() == false)
                             .map(taskLabel -> this.convertTaskLabelEntityToFullTaskLabelResponse(taskLabel))
                             .collect(Collectors.toList()));
         }

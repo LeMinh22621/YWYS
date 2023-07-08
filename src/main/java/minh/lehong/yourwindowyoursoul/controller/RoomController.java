@@ -28,16 +28,18 @@ public class RoomController {
     private BackgroundFacade backgroundFacade;
     @Autowired
     private TaskManagerFacade taskManagerFacade;
+    @Autowired
+    private TaskLabelFacade taskLabelFacade;
     /***
      * Label
      */
-    @PostMapping("create-label")
-    public ResponseEntity<?> createLabel(@RequestBody LabelRequest labelRequest) throws ParseException {
-        Response response = labelFacade.createLabel(labelRequest);
+    @PostMapping("create-label/{task_id}")
+    public ResponseEntity<?> createLabel(@PathVariable("task_id") String task_id, @RequestBody LabelRequest labelRequest) throws ParseException {
+        Response response = labelFacade.createLabel(task_id, labelRequest);
         return ResponseEntity.ok(response);
     }
     @PatchMapping("update-label/{label_id}")
-    public ResponseEntity<?> updateLabel(@PathVariable("label_id") String labelId, @RequestBody LabelRequest labelRequest) throws ParseException {
+    public ResponseEntity<?> updateLabel(@PathVariable("label_id") String labelId, @RequestBody LabelRequest labelRequest) {
         Response response = labelFacade.updateLabel(labelId, labelRequest);
         return ResponseEntity.ok(response);
     }
@@ -54,6 +56,19 @@ public class RoomController {
     @GetMapping("labels")
     public ResponseEntity<?> getAllLabelsByRoomId(@RequestParam("room_id") String roomId){
         Response response = labelFacade.getAllLabelsByRoomId(roomId);
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * TaskLabel
+     */
+    @PatchMapping("task-labels/{task_id}/{label_id}/{is_deleted}")
+    public ResponseEntity<?> updateIsDeletedTaskLabel(@PathVariable("task_id") String taskId, @PathVariable("label_id") String labelId, @PathVariable("is_deleted") boolean isDeleted ){
+        Response response = taskLabelFacade.deleteTaskLabelByLabelIdAndTaskId(labelId, taskId, isDeleted);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("task-labels")
+    public ResponseEntity<?> getAllLabelsByTaskId(@RequestParam("task_id") String taskId){
+        Response response = taskLabelFacade.getAllLabelByTaskId(taskId);
         return ResponseEntity.ok(response);
     }
     /***
@@ -110,7 +125,6 @@ public class RoomController {
     @GetMapping("shuffle-motivational-quote")
     public ResponseEntity<?> shuffleMotivationalQuote(){
         Response response = roomFacade.shuffleMotivationalQuote();
-        System.out.println("Day la API goi motivational quote");
         return ResponseEntity.ok(response);
     }
     @GetMapping("shuffle-background-by-theme-id")

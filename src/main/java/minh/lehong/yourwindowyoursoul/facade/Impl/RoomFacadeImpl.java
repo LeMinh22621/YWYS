@@ -49,7 +49,10 @@ public class RoomFacadeImpl implements RoomFacade {
         if(room != null)
         {
             response = new Response();
-            response.setData(this.commonConverter.convertRoomEntityToRoomDto(room));
+            //set data
+            RoomDto roomDto = commonConverter.convertRoomEntityToRoomDto(room);
+            roomDto.getUserDto().setPassword(null);
+            response.setData(roomDto);
             response.setStatus(true);
             response.setReturnCode(HttpStatus.OK.value());
             response.setMessage(String.format("Get Room By %s Success!", roomId));

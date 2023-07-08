@@ -10,9 +10,12 @@ import minh.lehong.yourwindowyoursoul.exceptions.DBException;
 import minh.lehong.yourwindowyoursoul.facade.LabelFacade;
 import minh.lehong.yourwindowyoursoul.model.entity.Label;
 import minh.lehong.yourwindowyoursoul.model.entity.Room;
+import minh.lehong.yourwindowyoursoul.model.entity.TaskLabel;
 import minh.lehong.yourwindowyoursoul.repository.LabelRepository;
 import minh.lehong.yourwindowyoursoul.service.LabelService;
 import minh.lehong.yourwindowyoursoul.service.RoomService;
+import minh.lehong.yourwindowyoursoul.service.TaskLabelService;
+import minh.lehong.yourwindowyoursoul.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -28,15 +31,16 @@ public class LabelFacadeImpl implements LabelFacade {
     @Autowired
     private LabelService labelService;
     @Autowired
-    private LabelRepository labelRepository;
-    @Autowired
     private CommonConverter commonConverter;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private TaskLabelService taskLabelService;
 
     @Override
-
-    public Response createLabel(LabelRequest labelRequest) throws ParseException {
+    public Response createLabel(String taskId, LabelRequest labelRequest) throws ParseException {
         Response response;
 
         LabelDto labelDto = commonConverter.convertLabelRequestToLabelDto(new LabelDto(), labelRequest);
@@ -54,6 +58,15 @@ public class LabelFacadeImpl implements LabelFacade {
         Label label = commonConverter.convertLabelDtoToLabelEntity(new Label(), labelDto);
         try{
             label = labelService.save(label);
+            // save to task_label table
+            TaskLabel taskLabel = new TaskLabel();
+            taskLabel.setLabel(label);
+            taskLabel.setTask(taskService.findByTaskId(UUID.fromString(taskId)));
+            taskLabel.setCreateDate(commonConverter.convertToG7(new Date()));
+            taskLabel.setUpdatedDate(commonConverter.convertToG7(new Date()));
+            taskLabel.setIsDeleted(false);
+            taskLabelService.save(taskLabel);
+
             response = new Response(commonConverter.convertLabelDtoToLabelResponse(commonConverter.convertLabelEntityToLabelDto(label)),
                     true, "Create Label Success!", HttpStatus.OK.value());
         }
@@ -95,17 +108,28 @@ public class LabelFacadeImpl implements LabelFacade {
     public Response deleteLabel(String labelId) {
         Response response;
         Label label = labelService.findLabelById(UUID.fromString(labelId));
-        label.setIsDeleted(true);
-        try
+        if(label != null)
         {
-            label = labelService.save(label);
-            response = new Response(commonConverter.convertLabelDtoToLabelResponse(commonConverter.convertLabelEntityToLabelDto(label)),
-                    true, "Delete Label Success!", HttpStatus.OK.value());
+            label.setIsDeleted(true);
+            try
+            {
+                List<TaskLabel> taskLabels = taskLabelService.findAllByLabel(label);
+                for(TaskLabel taskLabel : taskLabels)
+                {
+                    taskLabel.setIsDeleted(true);
+                    taskLabelService.save(taskLabel);
+                }
+                label = labelService.delete(label);
+                response = new Response(commonConverter.convertLabelDtoToLabelResponse(commonConverter.convertLabelEntityToLabelDto(label)),
+                        true, "Delete Label Success!", HttpStatus.OK.value());
+            }
+            catch (Exception e)
+            {
+                response = new Response(null, false, "Have No That Label", HttpStatus.BAD_REQUEST.value());
+            }
         }
-        catch (Exception e)
-        {
+        else
             response = new Response(null, false, "Delete Label Error!", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
         return response;
     }
 
@@ -131,7 +155,7 @@ public class LabelFacadeImpl implements LabelFacade {
             Room room = roomService.findRoomById(UUID.fromString(roomId));
             if(room !=  null)
             {
-                List<Label> labels = labelRepository.findAllByRoom(room);
+                List<Label> labels = labelService.findAllLabelsByRoom(room);
                 List<LabelResponse> labelResponses = labels
                         .stream()
                         .map(label -> commonConverter.convertLabelDtoToLabelResponse(commonConverter.convertLabelEntityToLabelDto(label)))

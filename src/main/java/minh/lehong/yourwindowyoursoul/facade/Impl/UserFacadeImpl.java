@@ -50,13 +50,13 @@ public class UserFacadeImpl implements UserFacade {
     private AuthenticationManager authenticationManager;
 
     @Override
-    public Response register(SignupRequest request) throws DBException, Exception{
+    public Response register(SignupRequest request) {
         Response response;
         if(userService.findByEmail(request.getEmail()) != null)
         {
             throw new DBException("This email has register!", HttpStatus.CONFLICT);
         }
-        else {
+        try{
             AuthenticationResponse authenticationResponse;
             try
             {
@@ -75,8 +75,14 @@ public class UserFacadeImpl implements UserFacade {
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 response = new Response(null, true, "Register Failed!", HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            response = new Response(null, true, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
         return response;
     }

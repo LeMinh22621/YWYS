@@ -39,13 +39,12 @@ public class TaskManagerServiceImpl implements TaskManagerService {
     }
 
     @Override
-    @CachePut(value = "taskManager", condition = "#result != null && #result.roomId != null", key = "#result.roomId")
+    @CachePut(value = "taskManager", condition = "#result != null && #result.taskManagerId != null", key = "#result.taskManagerId")
     public TaskManager save(TaskManager taskManager) {
         return taskManagerRepository.save(taskManager);
     }
 
     @Override
-    @Cacheable(value = "taskManagers", key = "'roomTaskManagers'")
     public List<TaskManager> findAllByRoomAndIsDeleted(Room room) {
         return taskManagerRepository.findAllByRoomAndIsDeleted(room, false);
     }

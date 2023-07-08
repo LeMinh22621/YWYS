@@ -14,6 +14,7 @@ import minh.lehong.yourwindowyoursoul.service.LabelService;
 import minh.lehong.yourwindowyoursoul.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,16 @@ public class LabelServiceImpl implements LabelService {
     public Label findLabelById(UUID labelUuid) {
         return labelRepository.findLabelByLabelIdAndIsDeleted(labelUuid, false)
                 .orElseThrow(() -> new DBException("Find Label Error!"));
+    }
+
+    @Override
+    @CacheEvict(key = "#label.labelId", value = "label")
+    public Label delete(Label label) {
+        return labelRepository.save(label);
+    }
+
+    @Override
+    public List<Label> findAllLabelsByRoom(Room room) {
+        return labelRepository.findAllByRoomAndIsDeleted(room, false);
     }
 }

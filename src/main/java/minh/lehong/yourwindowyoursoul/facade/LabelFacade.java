@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.util.UUID;
 
 public interface LabelFacade {
-    Response createLabel(LabelRequest labelRequest) throws ParseException;
+    Response createLabel(String taskId, LabelRequest labelRequest) throws ParseException;
 
     Response updateLabel(String labelId, LabelRequest labelRequest);
 

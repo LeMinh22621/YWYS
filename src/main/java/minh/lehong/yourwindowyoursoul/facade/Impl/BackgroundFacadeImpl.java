@@ -84,8 +84,8 @@ public class BackgroundFacadeImpl implements BackgroundFacade {
                 metadata.setContentLength(file.getSize());
                 metadata.setContentType(file.getContentType());
                 // 2. Store the image in s3 and update database with s3 image link
-                String path = String.format("%s/image", BucketName.BUCKET_NAME.getBucketName());
-                String fileName = String.format("%s", file.getOriginalFilename());
+                //String path = String.format("%s/image", BucketName.BUCKET_NAME.getBucketName());
+                String fileName = String.format("image/%s", file.getOriginalFilename());
                 // 3. start store
                 String url = fileStore.save(fileName, file.getInputStream(), metadata);
                 System.out.println(url);
@@ -110,6 +110,7 @@ public class BackgroundFacadeImpl implements BackgroundFacade {
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             response = new Response(null, false, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 

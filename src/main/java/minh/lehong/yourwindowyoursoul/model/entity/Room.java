@@ -44,7 +44,7 @@ public class Room extends EntityCommon implements Serializable {
     private int members;
     @Column(name = "is_public")
     private Boolean isPublic;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -56,7 +56,7 @@ public class Room extends EntityCommon implements Serializable {
     @ToString.Exclude
     private Background background;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "timer_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -84,7 +84,7 @@ public class Room extends EntityCommon implements Serializable {
     @ToString.Exclude
     private Collection<Sound> sounds;
 
-    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "rooms", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Collection<User> users;

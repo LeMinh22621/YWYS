@@ -28,19 +28,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 @EnableCaching
 public class ApplicationConfig {
-
     @Autowired
     private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return  new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                return userRepository.findByEmailAndIsDeleted(username, false)
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            }
-        };
+        return username -> userRepository.findByEmailAndIsDeleted(username, false)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Bean
